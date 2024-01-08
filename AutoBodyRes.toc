@@ -12,7 +12,7 @@
 ## X-License: All Rights Reserved
 ## X-Website: https://www.curseforge.com/wow/addons/auto-body-res
 ## X-Curse-Project-ID: 959554
-## X-Wago-ID: vNAeB9No
+## X-Wago-ID: QNlq0P6e
 ## X-WoWI-ID: 26676
 
 #@no-lib-strip@
