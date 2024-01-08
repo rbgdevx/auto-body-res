@@ -6,6 +6,7 @@ NS.DefaultDatabase = {
     ["test"] = true,
     ["release"] = true,
     ["resurrect"] = true,
+    ["onlypvp"] = true,
     ["fontsize"] = 40,
     ["font"] = "Friz Quadrata TT",
     ["color"] = {

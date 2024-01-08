@@ -25,7 +25,7 @@ NS.AceConfig = {
       end,
     },
     test = {
-      name = "Toggle on to test settings (out of instance)",
+      name = "Toggle on placeholder text to test settings",
       desc = "Only works outside of an instance.",
       type = "toggle",
       width = "double",
@@ -70,6 +70,18 @@ NS.AceConfig = {
       end,
       get = function(_)
         return AutoBodyRes.db.global.resurrect
+      end,
+    },
+    onlypvp = {
+      name = "Toggle on this addon only in battlegrounds",
+      desc = "Toggling this feature off will make it work outside of battlegrounds",
+      type = "toggle",
+      width = "double",
+      set = function(_, val)
+        AutoBodyRes.db.global.onlypvp = val
+      end,
+      get = function(_)
+        return AutoBodyRes.db.global.onlypvp
       end,
     },
     fontsize = {

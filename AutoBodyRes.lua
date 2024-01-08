@@ -106,36 +106,48 @@ end
 function AutoBodyRes:PLAYER_ENTERING_WORLD()
   self:RegisterEvent("PLAYER_UNGHOST")
 
-  local inInstance = IsInInstance()
+  if AutoBodyRes.db.global.onlypvp then
+    local inInstance = IsInInstance()
 
-  if inInstance then
-    After(0, function() -- Some info isn't available until 1 frame after loading is done
-      local _, instanceType = GetInstanceInfo()
+    if inInstance then
+      After(0, function() -- Some info isn't available until 1 frame after loading is done
+        local _, instanceType = GetInstanceInfo()
 
-      if instanceType == "pvp" then
-        if NS.isDead() then
-          local resTime = GetCorpseRecoveryDelay()
-          Interface:Start(Interface, resTime + 1)
-        else
-          Interface:Stop(Interface, Interface.timerAnimationGroup)
-          Interface:Stop(Interface, Interface.flashAnimationGroup)
+        if instanceType == "pvp" then
+          if NS.isDead() then
+            local resTime = GetCorpseRecoveryDelay()
+            Interface:Start(Interface, resTime + 1)
+          else
+            Interface:Stop(Interface, Interface.timerAnimationGroup)
+            Interface:Stop(Interface, Interface.flashAnimationGroup)
+          end
+
+          AutoBodyRes:PlayerDeadEvents()
+        end
+      end)
+    else
+      After(0, function() -- Some info isn't available until 1 frame after loading is done
+        if AutoBodyRes.db.global.test then
+          NS.Interface.text:SetText("Placeholder")
+          NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+          NS.Interface.textFrame:Show()
         end
 
-        AutoBodyRes:PlayerDeadEvents()
-      end
-    end)
+        if ResTicker then
+          ResTicker:Cancel()
+        end
+      end)
+    end
   else
-    After(0, function() -- Some info isn't available until 1 frame after loading is done
-      if AutoBodyRes.db.global.test then
-        NS.Interface.text:SetText("Placeholder")
-        NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
-        NS.Interface.textFrame:Show()
-      end
+    if NS.isDead() then
+      local resTime = GetCorpseRecoveryDelay()
+      Interface:Start(Interface, resTime + 1)
+    else
+      Interface:Stop(Interface, Interface.timerAnimationGroup)
+      Interface:Stop(Interface, Interface.flashAnimationGroup)
+    end
 
-      if ResTicker then
-        ResTicker:Cancel()
-      end
-    end)
+    AutoBodyRes:PlayerDeadEvents()
   end
 end
 
