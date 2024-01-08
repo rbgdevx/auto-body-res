@@ -1,0 +1,26 @@
+## Interface: 100200
+## Title: Auto Body Res
+## Version: 1.0.0
+## Author: Ajax
+## Notes: Shows text if someone took your body or not after you died in a battleground, preventing you from being able to body res.
+## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+## IconTexture: Interface\AddOns\AutoBodyRes\logo.tga
+## DefaultState: Enabled
+## SavedVariables: AutoBodyResDB
+## X-Category: Battlegrounds/PvP
+## X-Credits: Ajax
+## X-License: All Rights Reserved
+## X-Website: https://www.curseforge.com/wow/addons/auto-body-res
+## X-Curse-Project-ID: 959554
+## X-Wago-ID: vNAeB9No
+## X-WoWI-ID: 26676
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+config.lua
+helpers.lua
+interface.lua
+AutoBodyRes.lua
+options.lua
