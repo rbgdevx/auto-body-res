@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.0.4](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.4) (2024-01-08)
+
+- removing the auto-res 1s delay from the timer
+
 ## [v1.0.3](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.3) (2024-01-08)
 
 - adding new option to turn off bg only mode

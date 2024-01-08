@@ -25,7 +25,7 @@ do
       NS.RetrieveBody()
       local resTime = GetCorpseRecoveryDelay()
       if resTime then
-        After(resTime + 1, function()
+        After(resTime, function()
           ResTicker = Ticker(0.1, function()
             NS.RetrieveBody()
           end, 15)
