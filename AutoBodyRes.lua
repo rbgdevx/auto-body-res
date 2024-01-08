@@ -10,7 +10,7 @@ local GetCorpseRecoveryDelay = GetCorpseRecoveryDelay -- Time left before a play
 local After = C_Timer.After
 local Ticker = C_Timer.NewTicker
 
-AutoBodyRes = LibStub("AceAddon-3.0"):NewAddon(AddonName, "AceEvent-3.0", "AceHook-3.0")
+AutoBodyRes = LibStub("AceAddon-3.0"):NewAddon(AddonName, "AceEvent-3.0")
 
 local ResTicker
 
