@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.0.6](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.6) (2024-01-08)
+
+- fixing movement bug after locking into place
+
 ## [v1.0.5](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.5) (2024-01-08)
 
 - removing the auto-res 1s delay from the timer

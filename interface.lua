@@ -17,15 +17,19 @@ function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
-    f:StartMoving()
+    if AutoBodyRes.db.global.lock == false then
+      f:StartMoving()
+    end
   end)
   frame:SetScript("OnDragStop", function(f)
-    f:StopMovingOrSizing()
-    local a, _, b, c, d = f:GetPoint()
-    AutoBodyRes.db.global.position[1] = a
-    AutoBodyRes.db.global.position[2] = b
-    AutoBodyRes.db.global.position[3] = c
-    AutoBodyRes.db.global.position[4] = d
+    if AutoBodyRes.db.global.lock == false then
+      f:StopMovingOrSizing()
+      local a, _, b, c, d = f:GetPoint()
+      AutoBodyRes.db.global.position[1] = a
+      AutoBodyRes.db.global.position[2] = b
+      AutoBodyRes.db.global.position[3] = c
+      AutoBodyRes.db.global.position[4] = d
+    end
   end)
 end
 
@@ -119,8 +123,6 @@ function Interface:CreateInterface()
       AutoBodyRes.db.global.position[4]
     )
 
-    self:AddControls(TextFrame)
-
     local Text = TextFrame:CreateFontString(nil, "OVERLAY")
     Text:SetTextColor(
       AutoBodyRes.db.global.color.r,
@@ -139,6 +141,8 @@ function Interface:CreateInterface()
 
     Interface.text = Text
     Interface.textFrame = TextFrame
+
+    self:AddControls(Interface.textFrame)
 
     Interface.timerAnimationGroup = self:CreateTimerAnimation(Interface.textFrame)
     Interface.flashAnimationGroup = self:CreateFlashAnimation(Interface.textFrame)
