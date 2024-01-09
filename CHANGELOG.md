@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.0.7](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.7) (2024-01-09)
+
+- adding slash command support
+
 ## [v1.0.6](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.6) (2024-01-08)
 
 - fixing movement bug after locking into place

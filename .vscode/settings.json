@@ -26,6 +26,8 @@
     "LE_PARTY_CATEGORY_INSTANCE",
     "LE_PARTY_CATEGORY_HOME",
     "RESURRECT_REQUEST",
-    "Add"
+    "Add",
+    "SlashCmdList",
+    "hash_SlashCmdList"
   ]
 }

@@ -6,11 +6,12 @@ local LibStub = LibStub
 local GetInstanceInfo = GetInstanceInfo
 local IsInInstance = IsInInstance
 local GetCorpseRecoveryDelay = GetCorpseRecoveryDelay -- Time left before a player can accept a resurrection.
+-- local PortGraveyard = PortGraveyard -- Returns the player to the graveyard.
 
 local After = C_Timer.After
 local Ticker = C_Timer.NewTicker
 
-AutoBodyRes = LibStub("AceAddon-3.0"):NewAddon(AddonName, "AceEvent-3.0")
+AutoBodyRes = LibStub("AceAddon-3.0"):NewAddon(AddonName, "AceEvent-3.0", "AceConsole-3.0")
 
 local ResTicker
 
@@ -89,6 +90,9 @@ function AutoBodyRes:PLAYER_SKINNED()
   Interface.textFrame:Show()
   Interface.flashAnimationGroup:Play()
 
+  -- Protect Action, only available to the Blizzard UI
+  -- PortGraveyard()
+
   After(5, function()
     Interface.flashAnimationGroup:Stop()
   end)
@@ -151,9 +155,15 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
   end
 end
 
+function AutoBodyRes:SlashCommands(_)
+  LibStub("AceConfigDialog-3.0"):Open(AddonName)
+end
+
 function AutoBodyRes:OnInitialize()
   self.db = LibStub("AceDB-3.0"):New(AddonName .. "DB", NS.DefaultDatabase, true)
   self:SetupOptions()
+  self:RegisterChatCommand(AddonName, "SlashCommands")
+  self:RegisterChatCommand("abr", "SlashCommands")
 end
 
 function AutoBodyRes:OnEnable()

@@ -33,7 +33,7 @@ NS.AceConfig = {
         AutoBodyRes.db.global.test = val
         if IsInInstance() == false then
           if val then
-            NS.Interface.text:SetText("Placeholder")
+            NS.Interface.text:SetText("CAN BODY RES NOW")
             NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
             NS.Interface.textFrame:Show()
           else
