@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.0.8](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.8) (2024-05-08)
+
+- Fixing 10.2.7 bugs for incorrect setting of text justification
+
 ## [v1.0.7](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.7) (2024-01-09)
 
 - adding slash command support

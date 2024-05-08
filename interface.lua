@@ -132,7 +132,7 @@ function Interface:CreateInterface()
     )
     Text:SetShadowOffset(0, 0)
     Text:SetShadowColor(0, 0, 0, 1)
-    Text:SetJustifyH("MIDDLE")
+    Text:SetJustifyH("CENTER")
     Text:SetJustifyV("MIDDLE")
     Text:SetPoint("CENTER", TextFrame, "CENTER", 0, 0)
 

@@ -79,6 +79,17 @@ NS.AceConfig = {
       width = "double",
       set = function(_, val)
         AutoBodyRes.db.global.onlypvp = val
+
+        if IsInInstance() == false then
+          if val == false then
+            AutoBodyRes:PlayerDeadEvents()
+          else
+            AutoBodyRes:UnregisterEvent("PLAYER_DEAD")
+            AutoBodyRes:UnregisterEvent("PLAYER_SKINNED")
+            AutoBodyRes:UnregisterEvent("CORPSE_IN_RANGE")
+            AutoBodyRes:UnregisterEvent("RESURRECT_REQUEST")
+          end
+        end
       end,
       get = function(_)
         return AutoBodyRes.db.global.onlypvp
