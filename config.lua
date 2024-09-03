@@ -18,6 +18,7 @@ local CreateFrame = CreateFrame
 ---@field lock boolean
 ---@field test boolean
 ---@field release boolean
+---@field text boolean
 ---@field onlypvp boolean
 ---@field fontsize number
 ---@field font string
@@ -62,6 +63,7 @@ NS.DefaultDatabase = {
     test = true,
     release = true,
     resurrect = true,
+    text = true,
     onlypvp = true,
     fontsize = 40,
     font = "Friz Quadrata TT",

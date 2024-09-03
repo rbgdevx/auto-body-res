@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.1.2](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.2) (2024-09-03)
+
+- Adding new setting to turn off body res text
+
 ## [v1.1.1](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.1) (2024-09-03)
 
 - Fixing error

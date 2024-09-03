@@ -156,6 +156,12 @@ function Interface:Start(frame, duration)
 
   frame.textFrame:Show()
 
+  if NS.db.global.text then
+    frame.textFrame:SetAlpha(1)
+  else
+    frame.textFrame:SetAlpha(0)
+  end
+
   if duration == 0 then
     local str = sformat("%s", "CAN BODY RES NOW")
     frame.text:SetText(str)

@@ -91,12 +91,31 @@ NS.AceConfig = {
         return NS.db.global.resurrect
       end,
     },
+    text = {
+      name = "Toggle body res timer text",
+      desc = "Toggles on/off the text that displays the time remaining to resurrect your body.",
+      type = "toggle",
+      width = "double",
+      order = 5,
+      set = function(_, val)
+        NS.db.global.text = val
+
+        if val then
+          NS.Interface.textFrame:SetAlpha(1)
+        else
+          NS.Interface.textFrame:SetAlpha(0)
+        end
+      end,
+      get = function(_)
+        return NS.db.global.text
+      end,
+    },
     onlypvp = {
       name = "Toggle on this addon only in battlegrounds",
       desc = "Toggling this feature off will make it work outside of battlegrounds",
       type = "toggle",
       width = "double",
-      order = 5,
+      order = 6,
       set = function(_, val)
         NS.db.global.onlypvp = val
 
@@ -116,7 +135,7 @@ NS.AceConfig = {
       type = "range",
       name = "Font Size",
       width = "double",
-      order = 6,
+      order = 7,
       min = 1,
       max = 500,
       step = 1,
@@ -133,7 +152,7 @@ NS.AceConfig = {
       type = "select",
       name = "Font",
       width = "double",
-      order = 7,
+      order = 8,
       dialogControl = "LSM30_Font",
       values = AceGUIWidgetLSMlists.font,
       set = function(_, val)
@@ -149,7 +168,7 @@ NS.AceConfig = {
       type = "color",
       name = "Color",
       width = "double",
-      order = 8,
+      order = 9,
       hasAlpha = true,
       set = function(_, val1, val2, val3, val4)
         NS.db.global.color.r = val1
@@ -192,10 +211,10 @@ NS.AceConfig = {
 
 function Options:SlashCommands(message)
   if message == "toggle lock" then
-    if NS.db.global.general.lock == false then
-      NS.db.global.general.lock = true
+    if NS.db.global.lock == false then
+      NS.db.global.lock = true
     else
-      NS.db.global.general.lock = false
+      NS.db.global.lock = false
     end
   else
     LibStub("AceConfigDialog-3.0"):Open(AddonName)
