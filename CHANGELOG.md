@@ -1,8 +1,15 @@
 # Auto Body Res
 
+## [v1.1.0](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.0) (2024-09-02)
+
+- Refactor lib usage to match what im doing on BGWC addon to reduce needed libs and global db issues
+- Made it so you can't open the settings when locked and right clicking the text
+- Minor random changes based on learning from BGWC
+
 ## [v1.0.8](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.8) (2024-05-08)
 
 - Fixing 10.2.7 bugs for incorrect setting of text justification
+- Unregistering events from pvp if toggled off
 
 ## [v1.0.7](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.0.7) (2024-01-09)
 

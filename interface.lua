@@ -17,18 +17,18 @@ function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
-    if AutoBodyRes.db.global.lock == false then
+    if NS.db.global.lock == false then
       f:StartMoving()
     end
   end)
   frame:SetScript("OnDragStop", function(f)
-    if AutoBodyRes.db.global.lock == false then
+    if NS.db.global.lock == false then
       f:StopMovingOrSizing()
       local a, _, b, c, d = f:GetPoint()
-      AutoBodyRes.db.global.position[1] = a
-      AutoBodyRes.db.global.position[2] = b
-      AutoBodyRes.db.global.position[3] = c
-      AutoBodyRes.db.global.position[4] = d
+      NS.db.global.position[1] = a
+      NS.db.global.position[2] = b
+      NS.db.global.position[3] = c
+      NS.db.global.position[4] = d
     end
   end)
 end
@@ -44,12 +44,14 @@ end
 function Interface:AddControls(frame)
   frame:EnableMouse(true)
   frame:SetScript("OnMouseUp", function(_, btn)
-    if btn == "RightButton" then
-      LibStub("AceConfigDialog-3.0"):Open(AddonName)
+    if NS.db.global.lock == false then
+      if btn == "RightButton" then
+        LibStub("AceConfigDialog-3.0"):Open(AddonName)
+      end
     end
   end)
 
-  if AutoBodyRes.db.global.lock then
+  if NS.db.global.lock then
     self:StopMovement(frame)
   else
     self:MakeMoveable(frame)
@@ -116,20 +118,15 @@ function Interface:CreateInterface()
     local TextFrame = CreateFrame("Frame", AddonName .. "InterfaceTextFrame", UIParent)
     TextFrame:SetClampedToScreen(true)
     TextFrame:SetPoint(
-      AutoBodyRes.db.global.position[1],
+      NS.db.global.position[1],
       UIParent,
-      AutoBodyRes.db.global.position[2],
-      AutoBodyRes.db.global.position[3],
-      AutoBodyRes.db.global.position[4]
+      NS.db.global.position[2],
+      NS.db.global.position[3],
+      NS.db.global.position[4]
     )
 
     local Text = TextFrame:CreateFontString(nil, "OVERLAY")
-    Text:SetTextColor(
-      AutoBodyRes.db.global.color.r,
-      AutoBodyRes.db.global.color.g,
-      AutoBodyRes.db.global.color.b,
-      AutoBodyRes.db.global.color.a
-    )
+    Text:SetTextColor(NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a)
     Text:SetShadowOffset(0, 0)
     Text:SetShadowColor(0, 0, 0, 1)
     Text:SetJustifyH("CENTER")

@@ -1,8 +1,7 @@
-local AddonName, NS = ...
+local _, NS = ...
 
 local Interface = NS.Interface
 
-local LibStub = LibStub
 local GetInstanceInfo = GetInstanceInfo
 local IsInInstance = IsInInstance
 local GetCorpseRecoveryDelay = GetCorpseRecoveryDelay -- Time left before a player can accept a resurrection.
@@ -11,7 +10,9 @@ local GetCorpseRecoveryDelay = GetCorpseRecoveryDelay -- Time left before a play
 local After = C_Timer.After
 local Ticker = C_Timer.NewTicker
 
-AutoBodyRes = LibStub("AceAddon-3.0"):NewAddon(AddonName, "AceEvent-3.0", "AceConsole-3.0")
+---@type AutoBodyRes
+local AutoBodyRes = NS.AutoBodyRes
+local AutoBodyResFrame = NS.AutoBodyRes.frame
 
 local ResTicker
 
@@ -22,7 +23,7 @@ do
   local GetSelfResurrectOptions = C_DeathInfo.GetSelfResurrectOptions -- Returns self resurrect options for your character, including from soulstones.
 
   function AutoBodyRes:CORPSE_IN_RANGE()
-    if AutoBodyRes.db.global.resurrect then
+    if NS.db.global.resurrect then
       NS.RetrieveBody()
       local resTime = GetCorpseRecoveryDelay()
       if resTime then
@@ -36,7 +37,7 @@ do
   end
 
   function AutoBodyRes:RESURRECT_REQUEST()
-    if AutoBodyRes.db.global.resurrect then
+    if NS.db.global.resurrect then
       AcceptResurrect()
       After(0, function()
         if NS.isDead() then
@@ -54,7 +55,7 @@ do
   end
 
   function AutoBodyRes:PlayerDead()
-    if AutoBodyRes.db.global.release then
+    if NS.db.global.release then
       local options = GetSelfResurrectOptions()
       if options and #options == 0 then
         RepopMe()
@@ -66,7 +67,7 @@ do
     self:PlayerDead()
 
     local resTime = GetCorpseRecoveryDelay()
-    Interface:Start(Interface, resTime + 1)
+    Interface:Start(Interface, resTime + 0.5)
   end
 end
 
@@ -90,7 +91,7 @@ function AutoBodyRes:PLAYER_SKINNED()
   Interface.textFrame:Show()
   Interface.flashAnimationGroup:Play()
 
-  -- Protect Action, only available to the Blizzard UI
+  -- Protected Action, only available to the Blizzard UI
   -- PortGraveyard()
 
   After(5, function()
@@ -98,19 +99,23 @@ function AutoBodyRes:PLAYER_SKINNED()
   end)
 end
 
+local DEAD_EVENTS = {
+  "PLAYER_DEAD",
+  "PLAYER_SKINNED",
+  "CORPSE_IN_RANGE",
+  "RESURRECT_REQUEST",
+}
+
 function AutoBodyRes:PlayerDeadEvents()
-  self:RegisterEvent("PLAYER_DEAD")
-  self:RegisterEvent("PLAYER_SKINNED")
-  self:RegisterEvent("CORPSE_IN_RANGE")
-  self:RegisterEvent("RESURRECT_REQUEST")
+  FrameUtil.RegisterFrameForEvents(self, DEAD_EVENTS)
 
   self:PlayerDead()
 end
 
 function AutoBodyRes:PLAYER_ENTERING_WORLD()
-  self:RegisterEvent("PLAYER_UNGHOST")
+  AutoBodyResFrame:RegisterEvent("PLAYER_UNGHOST")
 
-  if AutoBodyRes.db.global.onlypvp then
+  if NS.db.global.onlypvp then
     local inInstance = IsInInstance()
 
     if inInstance then
@@ -120,7 +125,7 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
         if instanceType == "pvp" then
           if NS.isDead() then
             local resTime = GetCorpseRecoveryDelay()
-            Interface:Start(Interface, resTime + 1)
+            Interface:Start(Interface, resTime + 0.5)
           else
             Interface:Stop(Interface, Interface.timerAnimationGroup)
             Interface:Stop(Interface, Interface.flashAnimationGroup)
@@ -131,7 +136,7 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
       end)
     else
       After(0, function() -- Some info isn't available until 1 frame after loading is done
-        if AutoBodyRes.db.global.test then
+        if NS.db.global.test then
           NS.Interface.text:SetText("Placeholder")
           NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
           NS.Interface.textFrame:Show()
@@ -145,28 +150,21 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
   else
     if NS.isDead() then
       local resTime = GetCorpseRecoveryDelay()
-      Interface:Start(Interface, resTime + 1)
+      Interface:Start(Interface, resTime + 0.5)
     else
       Interface:Stop(Interface, Interface.timerAnimationGroup)
       Interface:Stop(Interface, Interface.flashAnimationGroup)
     end
 
-    AutoBodyRes:PlayerDeadEvents()
+    self:PlayerDeadEvents()
   end
 end
 
-function AutoBodyRes:SlashCommands(_)
-  LibStub("AceConfigDialog-3.0"):Open(AddonName)
-end
+function AutoBodyRes:PLAYER_LOGIN()
+  AutoBodyResFrame:UnregisterEvent("PLAYER_LOGIN")
 
-function AutoBodyRes:OnInitialize()
-  self.db = LibStub("AceDB-3.0"):New(AddonName .. "DB", NS.DefaultDatabase, true)
-  self:SetupOptions()
-  self:RegisterChatCommand(AddonName, "SlashCommands")
-  self:RegisterChatCommand("abr", "SlashCommands")
-end
-
-function AutoBodyRes:OnEnable()
   Interface:CreateInterface()
-  self:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+  AutoBodyResFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
+AutoBodyResFrame:RegisterEvent("PLAYER_LOGIN")
