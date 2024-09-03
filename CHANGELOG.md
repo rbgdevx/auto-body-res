@@ -1,5 +1,10 @@
 # Auto Body Res
 
+## [v1.1.1](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.1) (2024-09-03)
+
+- Fixing error
+- Removing unused type
+
 ## [v1.1.0](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.0) (2024-09-02)
 
 - Refactor lib usage to match what im doing on BGWC addon to reduce needed libs and global db issues

@@ -29,13 +29,14 @@
     "Add",
     "SlashCmdList",
     "hash_SlashCmdList",
-    "ButtonFrameTemplate_HidePortrait",
+    "UIParent",
     "FrameUtil",
     "SECONDS_PER_MIN",
     "SECONDS_PER_DAY",
     "SECONDS_PER_HOUR",
     "HOURS_MINUTES_SECONDS",
-    "MINUTES_SECONDS"
+    "MINUTES_SECONDS",
+    "ButtonFrameTemplate_HidePortrait"
   ],
   "Lua.runtime.version": "Lua 5.1",
   "Lua.runtime.builtin": {
@@ -49,5 +50,7 @@
     "table": "disable",
     "utf8": "disable"
   },
-  "Lua.workspace.library": ["~\\.vscode\\extensions\\ketho.wow-api-0.17.6\\Annotations"]
+  "Lua.workspace.library": [
+    "~\\.vscode\\extensions\\ketho.wow-api-0.17.6\\Annotations"
+  ]
 }

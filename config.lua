@@ -42,7 +42,6 @@ local CreateFrame = CreateFrame
 ---@field SlashCommands function
 ---@field frame Frame
 ---@field db DBTable
----@field isInitialized boolean
 
 ---@type AutoBodyRes
 ---@diagnostic disable-next-line: missing-fields

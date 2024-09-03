@@ -107,7 +107,7 @@ local DEAD_EVENTS = {
 }
 
 function AutoBodyRes:PlayerDeadEvents()
-  FrameUtil.RegisterFrameForEvents(self, DEAD_EVENTS)
+  FrameUtil.RegisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
 
   self:PlayerDead()
 end
