@@ -17,6 +17,7 @@ local DEAD_EVENTS = {
   "PLAYER_SKINNED",
   "CORPSE_IN_RANGE",
   "RESURRECT_REQUEST",
+  "PLAYER_UNGHOST",
 }
 
 NS.AceConfig = {
@@ -54,9 +55,6 @@ NS.AceConfig = {
             NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
             NS.Interface.textFrame:Show()
           else
-            NS.Interface.text:SetText("")
-            NS.Interface.textFrame:SetWidth(0)
-            NS.Interface.textFrame:SetHeight(0)
             NS.Interface.textFrame:Hide()
           end
         end
@@ -121,8 +119,10 @@ NS.AceConfig = {
 
         if IsInInstance() == false then
           if val == false then
+            NS.Interface.textFrame:Show()
             FrameUtil.RegisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
           else
+            NS.Interface.textFrame:Hide()
             FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
           end
         end

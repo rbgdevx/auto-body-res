@@ -104,6 +104,7 @@ local DEAD_EVENTS = {
   "PLAYER_SKINNED",
   "CORPSE_IN_RANGE",
   "RESURRECT_REQUEST",
+  "PLAYER_UNGHOST",
 }
 
 function AutoBodyRes:PlayerDeadEvents()
@@ -113,16 +114,16 @@ function AutoBodyRes:PlayerDeadEvents()
 end
 
 function AutoBodyRes:PLAYER_ENTERING_WORLD()
-  AutoBodyResFrame:RegisterEvent("PLAYER_UNGHOST")
-
   if NS.db.global.onlypvp then
-    local inInstance = IsInInstance()
+    After(0, function() -- Some info isn't available until 1 frame after loading is done
+      local inInstance = IsInInstance()
 
-    if inInstance then
-      After(0, function() -- Some info isn't available until 1 frame after loading is done
+      if inInstance then
         local _, instanceType = GetInstanceInfo()
+        local isBattleground = C_PvP.IsBattleground()
+        local isBlitz = C_PvP.IsSoloRBG()
 
-        if instanceType == "pvp" then
+        if instanceType == "pvp" or isBattleground or isBlitz then
           if NS.isDead() then
             local resTime = GetCorpseRecoveryDelay()
             Interface:Start(Interface, resTime + 0.5)
@@ -132,10 +133,20 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
           end
 
           AutoBodyRes:PlayerDeadEvents()
+        else
+          Interface:Stop(Interface, Interface.timerAnimationGroup)
+          Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+          if ResTicker then
+            ResTicker:Cancel()
+          end
+
+          FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
         end
-      end)
-    else
-      After(0, function() -- Some info isn't available until 1 frame after loading is done
+      else
+        Interface:Stop(Interface, Interface.timerAnimationGroup)
+        Interface:Stop(Interface, Interface.flashAnimationGroup)
+
         if NS.db.global.test then
           NS.Interface.text:SetText("Placeholder")
           NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
@@ -145,8 +156,10 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
         if ResTicker then
           ResTicker:Cancel()
         end
-      end)
-    end
+
+        FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
+      end
+    end)
   else
     if NS.isDead() then
       local resTime = GetCorpseRecoveryDelay()
