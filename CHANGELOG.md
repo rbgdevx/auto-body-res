@@ -1,5 +1,13 @@
 # Auto Body Res
 
+## [v1.1.3](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.3) (2024-10-02)
+
+- Double ensures that if you toggle battleground only mode it wont load in arena and even if it did it hides any previous death text
+- adds a check in the start of a message being shown as well to ensure you're in a battleground if that option is enabled
+- showing/hiding the text if changing the battleground only setting while dead
+- unregisters events at appropriate times so no accidental triggers run and hides at the same time as well
+- reduces the default text size a little
+
 ## [v1.1.2](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.2) (2024-09-03)
 
 - Adding new setting to turn off body res text
