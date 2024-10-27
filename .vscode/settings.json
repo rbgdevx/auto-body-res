@@ -36,7 +36,8 @@
     "SECONDS_PER_HOUR",
     "HOURS_MINUTES_SECONDS",
     "MINUTES_SECONDS",
-    "ButtonFrameTemplate_HidePortrait"
+    "ButtonFrameTemplate_HidePortrait",
+    "CopyTable"
   ],
   "Lua.runtime.version": "Lua 5.1",
   "Lua.runtime.builtin": {

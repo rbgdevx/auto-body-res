@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.1.4](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.4) (2024-10-27)
+
+- Update toc
+
 ## [v1.1.3](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.3) (2024-10-02)
 
 - Double ensures that if you toggle battleground only mode it wont load in arena and even if it did it hides any previous death text
