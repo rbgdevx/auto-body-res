@@ -1,5 +1,11 @@
 # Auto Body Res
 
+## [v1.1.5](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.5) (2024-11-04)
+
+- Creating all new settings to control which battleground modes to disable in
+- Creating all new settings to control which battleground map to disable in
+- Updating other setting labels to be more clear on what they do
+
 ## [v1.1.4](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.4) (2024-10-27)
 
 - Update toc

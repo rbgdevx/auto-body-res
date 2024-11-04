@@ -9,6 +9,10 @@ local GetCorpseRecoveryDelay = GetCorpseRecoveryDelay -- Time left before a play
 
 local After = C_Timer.After
 local Ticker = C_Timer.NewTicker
+local IsBattleground = C_PvP.IsBattleground
+local IsRatedSoloRBG = C_PvP.IsRatedSoloRBG
+local IsRatedBattleground = C_PvP.IsRatedBattleground
+local IsInBrawl = C_PvP.IsInBrawl
 
 ---@type AutoBodyRes
 local AutoBodyRes = NS.AutoBodyRes
@@ -114,16 +118,49 @@ function AutoBodyRes:PlayerDeadEvents()
 end
 
 function AutoBodyRes:PLAYER_ENTERING_WORLD()
-  if NS.db.global.onlypvp then
-    After(0, function() -- Some info isn't available until 1 frame after loading is done
-      local inInstance = IsInInstance()
+  After(0, function() -- Some info isn't available until 1 frame after loading is done
+    local inInstance, instanceType = IsInInstance()
 
-      if inInstance then
-        local _, instanceType = GetInstanceInfo()
-        local isBattleground = C_PvP.IsBattleground()
-        local isBlitz = C_PvP.IsSoloRBG()
+    if inInstance then
+      local isBattleground = instanceType == "pvp" or IsBattleground()
 
-        if instanceType == "pvp" or isBattleground or isBlitz then
+      if isBattleground then
+        local name = GetInstanceInfo()
+
+        local isBlitz = IsRatedSoloRBG()
+        local isRated = IsRatedBattleground()
+        local isBrawl = IsInBrawl()
+        local isEpic = NS.IsEpicBattleground(name)
+
+        local dontShowInBlitz = isBlitz and NS.db.global.disableblitz
+        local dontShowInRated = isRated and isBlitz == false and NS.db.global.disablerated
+        local dontShowInRandom = isBlitz == false and isRated == false and NS.db.global.disablerandom
+        local dontShowInBrawl = isBrawl and NS.db.global.disablebrawl
+        local dontShowInEpic = isEpic and NS.db.global.disableepic
+
+        if dontShowInBlitz or dontShowInRated or dontShowInRandom or dontShowInBrawl or dontShowInEpic then
+          Interface:Stop(Interface, Interface.timerAnimationGroup)
+          Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+          if ResTicker then
+            ResTicker:Cancel()
+          end
+
+          FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
+          return
+        end
+
+        local mapNotInList = NS.isMapAllowed(name) == nil
+        local isMapAllowed = mapNotInList and true or NS.isMapAllowed(name)
+
+        if mapNotInList then
+          NS.write(
+            "This map is not being tracked, please report this to the addon author to track the following map name: "
+              .. name
+          )
+        end
+
+        if NS.db.global.allmaps or isMapAllowed then
           if NS.isDead() then
             local resTime = GetCorpseRecoveryDelay()
             Interface:Start(Interface, resTime + 0.5)
@@ -133,25 +170,10 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
           end
 
           AutoBodyRes:PlayerDeadEvents()
-        else
-          Interface:Stop(Interface, Interface.timerAnimationGroup)
-          Interface:Stop(Interface, Interface.flashAnimationGroup)
-
-          if ResTicker then
-            ResTicker:Cancel()
-          end
-
-          FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
         end
       else
         Interface:Stop(Interface, Interface.timerAnimationGroup)
         Interface:Stop(Interface, Interface.flashAnimationGroup)
-
-        if NS.db.global.test then
-          NS.Interface.text:SetText("Placeholder")
-          NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
-          NS.Interface.textFrame:Show()
-        end
 
         if ResTicker then
           ResTicker:Cancel()
@@ -159,18 +181,30 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
 
         FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
       end
-    end)
-  else
-    if NS.isDead() then
-      local resTime = GetCorpseRecoveryDelay()
-      Interface:Start(Interface, resTime + 0.5)
     else
-      Interface:Stop(Interface, Interface.timerAnimationGroup)
-      Interface:Stop(Interface, Interface.flashAnimationGroup)
-    end
+      if not NS.db.global.outside then
+        Interface:Stop(Interface, Interface.timerAnimationGroup)
+        Interface:Stop(Interface, Interface.flashAnimationGroup)
 
-    self:PlayerDeadEvents()
-  end
+        if ResTicker then
+          ResTicker:Cancel()
+        end
+
+        FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
+        return
+      end
+
+      if NS.isDead() then
+        local resTime = GetCorpseRecoveryDelay()
+        Interface:Start(Interface, resTime + 0.5)
+      else
+        Interface:Stop(Interface, Interface.timerAnimationGroup)
+        Interface:Stop(Interface, Interface.flashAnimationGroup)
+      end
+
+      AutoBodyRes:PlayerDeadEvents()
+    end
+  end)
 end
 
 function AutoBodyRes:PLAYER_LOGIN()

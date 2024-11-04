@@ -10,6 +10,10 @@ local setmetatable = setmetatable
 local RetrieveCorpse = RetrieveCorpse -- Resurrects when the player is standing near its corpse.
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local format = format
+local select = select
+local UnitClass = UnitClass
+local GetClassColor = GetClassColor
+local print = print
 
 local mfloor = math.floor
 local mmax = math.max
@@ -17,6 +21,12 @@ local mmax = math.max
 local After = C_Timer.After
 
 local LSM = LibStub("LibSharedMedia-3.0")
+
+NS.write = function(...)
+  local playerClass = select(2, UnitClass("player"))
+  local playerClassHexColor = "|c" .. select(4, GetClassColor(playerClass))
+  print(playerClassHexColor .. "AutoBodyRes|r: ", ...)
+end
 
 NS.isDead = function()
   return UnitIsDeadOrGhost("player")
@@ -89,25 +99,39 @@ NS.RetrieveBody = function()
   end)
 end
 
--- Copies table values from src to dst if they don't exist in dst
-NS.CopyDefaults = function(src, dst)
-  if type(src) ~= "table" then
-    return {}
-  end
+NS.IsEpicBattleground = function(instanceName)
+  local EPIC_BATTLEGROUNDS = {
+    ["Alterac Valley"] = true,
+    ["Ashran"] = true,
+    ["Isle of Conquest"] = true,
+    ["Battle for Wintergrasp"] = true,
+  }
+  return EPIC_BATTLEGROUNDS[instanceName]
+end
 
-  if type(dst) ~= "table" then
-    dst = {}
-  end
-
-  for k, v in pairs(src) do
-    if type(v) == "table" then
-      dst[k] = NS.CopyDefaults(v, dst[k])
-    elseif type(v) ~= type(dst[k]) then
-      dst[k] = v
-    end
-  end
-
-  return dst
+NS.isMapAllowed = function(instanceName)
+  local MAPS = {
+    -- battlegrounds
+    ["Arathi Basin"] = NS.db.global.arathibasin,
+    ["Deephaul Ravine"] = NS.db.global.deephaulravine,
+    ["Deepwind Gorge"] = NS.db.global.deepwindgorge,
+    ["Eye of the Storm"] = NS.db.global.eyeofthestorm,
+    ["Seething Shore"] = NS.db.global.seethingshore,
+    ["Silvershard Mines"] = NS.db.global.silvershardmines,
+    ["The Battle for Gilneas"] = NS.db.global.thebattleforgilneas,
+    ["Temple of Kotmogu"] = NS.db.global.templeofkotmogu,
+    ["Twin Peaks"] = NS.db.global.twinpeaks,
+    ["Warsong Gulch"] = NS.db.global.warsonggulch,
+    -- epic battlegrounds
+    ["Alterac Valley"] = NS.db.global.alteracvalley,
+    ["Ashran"] = NS.db.global.ashran,
+    ["Battle for Wintergrasp"] = NS.db.global.battleforwintergrasp,
+    ["Isle of Conquest"] = NS.db.global.isleofconquest,
+    -- brawl battlegrounds
+    ["Arathi Basin Winter"] = NS.db.global.arathiblizzard,
+    ["Korrak's Revenge"] = NS.db.global.korraksrevenge,
+  }
+  return MAPS[instanceName]
 end
 
 NS.CopyTable = function(src, dest)
@@ -132,20 +156,34 @@ NS.CopyTable = function(src, dest)
   return setmetatable(res, getmetatable(src))
 end
 
+-- Copies table values from src to dst if they don't exist in dst
+NS.CopyDefaults = function(src, dst)
+  if type(src) ~= "table" then
+    return {}
+  end
+  if type(dst) ~= "table" then
+    dst = {}
+  end
+  for k, v in pairs(src) do
+    if type(v) == "table" then
+      dst[k] = NS.CopyDefaults(v, dst[k])
+    elseif type(v) ~= type(dst[k]) then
+      dst[k] = v
+    end
+  end
+  return dst
+end
+
 -- Cleanup savedvariables by removing table values in src that no longer
 -- exists in table dst (default settings)
 NS.CleanupDB = function(src, dst)
   for key, value in pairs(src) do
     if dst[key] == nil then
-      -- HACK: offsetsXY are not set in DEFAULT_SETTINGS but sat on demand instead to save memory,
-      -- which causes nil comparison to always be true here, so always ignore these for now
-      if key ~= "offsetsX" and key ~= "offsetsY" and key ~= "version" then
+      if key ~= "version" then
         src[key] = nil
       end
     elseif type(value) == "table" then
-      if key ~= "disabledCategories" and key ~= "categoryTextures" then -- also sat on demand
-        dst[key] = NS.CleanupDB(value, dst[key])
-      end
+      dst[key] = NS.CleanupDB(value, dst[key])
     end
   end
   return dst

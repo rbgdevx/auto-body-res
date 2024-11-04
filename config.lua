@@ -1,4 +1,4 @@
-local _, NS = ...
+local AddonName, NS = ...
 
 local CreateFrame = CreateFrame
 
@@ -19,7 +19,7 @@ local CreateFrame = CreateFrame
 ---@field test boolean
 ---@field release boolean
 ---@field text boolean
----@field onlypvp boolean
+---@field outside boolean
 ---@field fontsize number
 ---@field font string
 ---@field color ColorArray
@@ -49,7 +49,7 @@ local CreateFrame = CreateFrame
 local AutoBodyRes = {}
 NS.AutoBodyRes = AutoBodyRes
 
-local AutoBodyResFrame = CreateFrame("Frame", "AutoBodyResFrame")
+local AutoBodyResFrame = CreateFrame("Frame", AddonName .. "Frame")
 AutoBodyResFrame:SetScript("OnEvent", function(_, event, ...)
   if AutoBodyRes[event] then
     AutoBodyRes[event](AutoBodyRes, ...)
@@ -64,9 +64,15 @@ NS.DefaultDatabase = {
     release = true,
     resurrect = true,
     text = true,
-    onlypvp = true,
+    outside = false,
+    disableblitz = false,
+    disablerated = false,
+    disablerandom = false,
+    disableepic = false,
+    disablebrawl = false,
     fontsize = 36,
     font = "Friz Quadrata TT",
+    debug = false,
     color = {
       r = 176 / 255,
       g = 43 / 255,
@@ -79,6 +85,87 @@ NS.DefaultDatabase = {
       0,
       0,
     },
-    debug = false,
+    allmaps = true,
+    -- battlegrounds
+    arathibasin = true,
+    deephaulravine = true,
+    deepwindgorge = true,
+    eyeofthestorm = true,
+    seethingshore = true,
+    silvershardmines = true,
+    thebattleforgilneas = true,
+    templeofkotmogu = true,
+    twinpeaks = true,
+    warsonggulch = true,
+    -- epic battlegrounds
+    alteracvalley = true,
+    ashran = true,
+    battleforwintergrasp = true,
+    isleofconquest = true,
+    -- brawl battlegrounds
+    arathiblizzard = true,
+    korraksrevenge = true,
   },
 }
+
+--[[
+-- Warsong Gulch --
+-- Instance ID: 2106
+-- Zone ID: 1339
+
+-- Arathi Basin --
+-- Instance ID: 2107, 2177, 1681
+-- Zone ID: 1366, nil, 837
+
+-- Deephaul Ravine --
+-- Instance ID: 2656
+-- Zone ID: 2345
+
+-- Alterac Valley --
+-- Instance ID: 30
+-- Zone ID: 91
+
+-- Eye of the Storm --
+-- Instance ID: 566, 968
+-- Zone ID: 112
+
+-- Isle of Conquest --
+-- Instance ID: 628
+-- Zone ID: 169
+
+-- The Battle for Gilneas --
+-- Instance ID: 761
+-- Zone ID: 275
+
+-- Battle for Wintergrasp --
+-- Instance ID: 2118
+-- Zone ID: 1334
+
+-- Ashran --
+-- Instance ID: 1191
+-- Zone ID: 1478
+
+-- Twin Peaks --
+-- Instance ID: 726
+-- Zone ID: 206
+
+-- Silvershard Mines --
+-- Instance ID: 727
+-- Zone ID: 423
+
+-- Temple of Kotmogu --
+-- Instance ID: 998
+-- Zone ID: 417
+
+-- Seething Shore --
+-- Instance ID: 1803
+-- Zone ID: 907
+
+-- Deepwind Gorge --
+-- Instance ID: 2245
+-- Zone ID: 1576
+
+-- Korrak's Revenge --
+-- Instance ID: 2197
+-- Zone ID: 1537
+--]]
