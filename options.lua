@@ -79,9 +79,11 @@ NS.AceConfig = {
                 if NS.db.global.outside then
                   if not NS.isDead() then
                     NS.Interface.textFrame:Hide()
+                    NS.Interface.text:SetText("")
                   end
                 else
                   NS.Interface.textFrame:Hide()
+                  NS.Interface.text:SetText("")
                 end
               end
             end
@@ -150,7 +152,9 @@ NS.AceConfig = {
                 NS.Interface.textFrame:Show()
                 FrameUtil.RegisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
               else
-                NS.Interface.textFrame:Hide()
+                if not NS.db.global.test then
+                  NS.Interface.textFrame:Hide()
+                end
                 FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
               end
             end

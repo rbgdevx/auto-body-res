@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.1.7](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.7) (2024-11-04)
+
+- Fixing placeholder text hide/show settings
+
 ## [v1.1.6](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.6) (2024-11-04)
 
 - Updating placeholder text to be clear its placeholder
