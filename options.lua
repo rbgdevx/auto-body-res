@@ -64,11 +64,25 @@ NS.AceConfig = {
             local isInInstance = IsInInstance()
             if isInInstance == false then
               if val then
-                NS.Interface.text:SetText("CAN BODY RES NOW")
-                NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
-                NS.Interface.textFrame:Show()
+                if NS.db.global.outside then
+                  if not NS.isDead() then
+                    NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+                    NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+                    NS.Interface.textFrame:Show()
+                  end
+                else
+                  NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+                  NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+                  NS.Interface.textFrame:Show()
+                end
               else
-                NS.Interface.textFrame:Hide()
+                if NS.db.global.outside then
+                  if not NS.isDead() then
+                    NS.Interface.textFrame:Hide()
+                  end
+                else
+                  NS.Interface.textFrame:Hide()
+                end
               end
             end
           end,

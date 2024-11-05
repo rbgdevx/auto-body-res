@@ -57,6 +57,8 @@ AutoBodyResFrame:SetScript("OnEvent", function(_, event, ...)
 end)
 NS.AutoBodyRes.frame = AutoBodyResFrame
 
+NS.PLACEHOLDER_TEXT = "PLACEHOLDER TEXT"
+
 NS.DefaultDatabase = {
   global = {
     lock = false,

@@ -43,6 +43,7 @@ do
   function AutoBodyRes:RESURRECT_REQUEST()
     if NS.db.global.resurrect then
       AcceptResurrect()
+
       After(0, function()
         if NS.isDead() then
           AcceptResurrect()
@@ -55,6 +56,15 @@ do
 
       Interface:Stop(Interface, Interface.timerAnimationGroup)
       Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+      local isInInstance = IsInInstance()
+      if isInInstance == false then
+        if NS.db.global.test then
+          NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+          NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+          NS.Interface.textFrame:Show()
+        end
+      end
     end
   end
 
@@ -82,6 +92,15 @@ function AutoBodyRes:PLAYER_UNGHOST()
 
   Interface:Stop(Interface, Interface.timerAnimationGroup)
   Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+  local isInInstance = IsInInstance()
+  if isInInstance == false then
+    if NS.db.global.test then
+      NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+      NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+      NS.Interface.textFrame:Show()
+    end
+  end
 end
 
 function AutoBodyRes:PLAYER_SKINNED()
@@ -119,9 +138,9 @@ end
 
 function AutoBodyRes:PLAYER_ENTERING_WORLD()
   After(0, function() -- Some info isn't available until 1 frame after loading is done
-    local inInstance, instanceType = IsInInstance()
+    local isInInstance, instanceType = IsInInstance()
 
-    if inInstance then
+    if isInInstance then
       local isBattleground = instanceType == "pvp" or IsBattleground()
 
       if isBattleground then
@@ -190,6 +209,12 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
           ResTicker:Cancel()
         end
 
+        if NS.db.global.test then
+          NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+          NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+          NS.Interface.textFrame:Show()
+        end
+
         FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
         return
       end
@@ -200,6 +225,12 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
       else
         Interface:Stop(Interface, Interface.timerAnimationGroup)
         Interface:Stop(Interface, Interface.flashAnimationGroup)
+      end
+
+      if NS.db.global.test then
+        NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+        NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+        NS.Interface.textFrame:Show()
       end
 
       AutoBodyRes:PlayerDeadEvents()

@@ -1,5 +1,10 @@
 # Auto Body Res
 
+## [v1.1.6](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.6) (2024-11-04)
+
+- Updating placeholder text to be clear its placeholder
+- Ensuring when you have placeholder text enabled for placement that it always shows back up when out of instances and when not dead if enabled outside battlegrounds
+
 ## [v1.1.5](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.5) (2024-11-04)
 
 - Creating all new settings to control which battleground modes to disable in
