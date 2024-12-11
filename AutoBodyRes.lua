@@ -1,7 +1,9 @@
-local _, NS = ...
+local AddonName, NS = ...
 
 local Interface = NS.Interface
 
+local LibStub = LibStub
+local next = next
 local GetInstanceInfo = GetInstanceInfo
 local IsInInstance = IsInInstance
 local GetCorpseRecoveryDelay = GetCorpseRecoveryDelay -- Time left before a player can accept a resurrection.
@@ -13,6 +15,7 @@ local IsBattleground = C_PvP.IsBattleground
 local IsRatedSoloRBG = C_PvP.IsRatedSoloRBG
 local IsRatedBattleground = C_PvP.IsRatedBattleground
 local IsInBrawl = C_PvP.IsInBrawl
+local GetActiveBrawlInfo = C_PvP.GetActiveBrawlInfo
 
 ---@type AutoBodyRes
 local AutoBodyRes = NS.AutoBodyRes
@@ -144,12 +147,18 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
       local isBattleground = instanceType == "pvp" or IsBattleground()
 
       if isBattleground then
-        local name = GetInstanceInfo()
+        local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
 
         local isBlitz = IsRatedSoloRBG()
         local isRated = IsRatedBattleground()
         local isBrawl = IsInBrawl()
-        local isEpic = NS.IsEpicBattleground(name)
+        local isEpic = NS.IsEpicBattleground(instanceID)
+
+        -- local activeBrawlInfo = GetActiveBrawlInfo()
+        -- print("isBrawl", isBrawl, instanceID)
+        -- if activeBrawlInfo then
+        -- 	print("activeBrawlInfo", activeBrawlInfo.brawlID, activeBrawlInfo.brawlType)
+        -- end
 
         local dontShowInBlitz = isBlitz and NS.db.global.disableblitz
         local dontShowInRated = isRated and isBlitz == false and NS.db.global.disablerated
@@ -169,14 +178,22 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
           return
         end
 
-        local mapNotInList = NS.isMapAllowed(name) == nil
-        local isMapAllowed = mapNotInList and true or NS.isMapAllowed(name)
-
-        if mapNotInList then
-          NS.write(
-            "This map is not being tracked, please report this to the addon author to track the following map name: "
-              .. name
-          )
+        local activeBrawlInfo = GetActiveBrawlInfo()
+        local isMapAllowed = false
+        if isBrawl then
+          if activeBrawlInfo then
+            if activeBrawlInfo.brawlType == 1 then
+              isMapAllowed = NS.isBrawlAllowed(activeBrawlInfo.brawlID)
+            else
+              isMapAllowed = false
+            end
+          else
+            isMapAllowed = false
+          end
+        elseif isEpic then
+          isMapAllowed = NS.isEpicBattlegroundAllowed(instanceID)
+        else
+          isMapAllowed = NS.isBattlegroundAllowed(instanceID)
         end
 
         if NS.db.global.allmaps or isMapAllowed then
@@ -246,3 +263,181 @@ function AutoBodyRes:PLAYER_LOGIN()
   AutoBodyResFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 AutoBodyResFrame:RegisterEvent("PLAYER_LOGIN")
+
+function NS.OnDbChanged()
+  AutoBodyResFrame.dbChanged = true
+
+  local isInInstance, instanceType = IsInInstance()
+
+  if isInInstance then
+    local isBattleground = instanceType == "pvp" or IsBattleground()
+
+    if isBattleground then
+      local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
+
+      local isBlitz = IsRatedSoloRBG()
+      local isRated = IsRatedBattleground()
+      local isBrawl = IsInBrawl()
+      local isEpic = NS.IsEpicBattleground(instanceID)
+
+      local dontShowInBlitz = isBlitz and NS.db.global.disableblitz
+      local dontShowInRated = isRated and isBlitz == false and NS.db.global.disablerated
+      local dontShowInRandom = isBlitz == false and isRated == false and NS.db.global.disablerandom
+      local dontShowInBrawl = isBrawl and NS.db.global.disablebrawl
+      local dontShowInEpic = isEpic and NS.db.global.disableepic
+
+      if dontShowInBlitz or dontShowInRated or dontShowInRandom or dontShowInBrawl or dontShowInEpic then
+        Interface:Stop(Interface, Interface.timerAnimationGroup)
+        Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+        if ResTicker then
+          ResTicker:Cancel()
+        end
+
+        FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
+        return
+      end
+
+      local isMapAllowed = false
+      if isBrawl then
+        local activeBrawlInfo = GetActiveBrawlInfo()
+        if activeBrawlInfo then
+          if activeBrawlInfo.brawlType == 1 then
+            isMapAllowed = NS.isBrawlAllowed(activeBrawlInfo.brawlID)
+          else
+            isMapAllowed = false
+          end
+        else
+          isMapAllowed = false
+        end
+      elseif isEpic then
+        isMapAllowed = NS.isEpicBattlegroundAllowed(instanceID)
+      else
+        isMapAllowed = NS.isBattlegroundAllowed(instanceID)
+      end
+
+      if NS.db.global.allmaps or isMapAllowed then
+        if NS.isDead() then
+          local resTime = GetCorpseRecoveryDelay()
+          Interface:Start(Interface, resTime + 0.5)
+        else
+          Interface:Stop(Interface, Interface.timerAnimationGroup)
+          Interface:Stop(Interface, Interface.flashAnimationGroup)
+        end
+
+        AutoBodyRes:PlayerDeadEvents()
+      end
+    else
+      Interface:Stop(Interface, Interface.timerAnimationGroup)
+      Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+      if ResTicker then
+        ResTicker:Cancel()
+      end
+
+      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
+    end
+  else
+    if NS.db.global.outside then
+      if NS.isDead() then
+        local resTime = GetCorpseRecoveryDelay()
+        Interface:Start(Interface, resTime + 0.5)
+      else
+        Interface:Stop(Interface, Interface.timerAnimationGroup)
+        Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+        if NS.db.global.test then
+          NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+          NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+          NS.Interface.textFrame:Show()
+        else
+          NS.Interface.textFrame:Hide()
+          NS.Interface.text:SetText("")
+        end
+      end
+
+      AutoBodyRes:PlayerDeadEvents()
+    else
+      Interface:Stop(Interface, Interface.timerAnimationGroup)
+      Interface:Stop(Interface, Interface.flashAnimationGroup)
+
+      if ResTicker then
+        ResTicker:Cancel()
+      end
+
+      if NS.db.global.test then
+        NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+        NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+        NS.Interface.textFrame:Show()
+      else
+        NS.Interface.textFrame:Hide()
+        NS.Interface.text:SetText("")
+      end
+
+      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
+    end
+  end
+
+  NS.UpdateColor(NS.Interface.text)
+  NS.UpdateFont(NS.Interface.text)
+  NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+
+  if NS.db.global.text then
+    NS.Interface.textFrame:SetAlpha(1)
+  else
+    NS.Interface.textFrame:SetAlpha(0)
+  end
+
+  if NS.db.global.lock then
+    NS.Interface:Lock(NS.Interface.textFrame)
+  else
+    NS.Interface:Unlock(NS.Interface.textFrame)
+  end
+
+  AutoBodyResFrame.dbChanged = false
+end
+
+function NS.Options_SlashCommands(message)
+  if message == "toggle lock" then
+    if NS.db.global.lock == false then
+      NS.db.global.lock = true
+    else
+      NS.db.global.lock = false
+    end
+  else
+    LibStub("AceConfigDialog-3.0"):Open(AddonName)
+  end
+end
+
+function NS.Options_Setup()
+  LibStub("AceConfig-3.0"):RegisterOptionsTable(AddonName, NS.AceConfig)
+  LibStub("AceConfigDialog-3.0"):AddToBlizOptions(AddonName, AddonName)
+
+  SLASH_ABR1 = AddonName
+  SLASH_ABR2 = "/abr"
+
+  function SlashCmdList.ABR(message)
+    NS.Options_SlashCommands(message)
+  end
+end
+
+function AutoBodyRes:ADDON_LOADED(addon)
+  if addon == AddonName then
+    AutoBodyResFrame:UnregisterEvent("ADDON_LOADED")
+
+    AutoBodyResDB = AutoBodyResDB and next(AutoBodyResDB) ~= nil and AutoBodyResDB or {}
+
+    -- Copy any settings from default if they don't exist in current profile
+    NS.CopyDefaults(NS.DefaultDatabase, AutoBodyResDB)
+
+    -- Reference to active db profile
+    -- Always use this directly or reference will be invalid
+    NS.db = AutoBodyResDB
+
+    -- Remove table values no longer found in default settings
+    NS.CleanupDB(AutoBodyResDB, NS.DefaultDatabase)
+
+    NS.Options_Setup()
+  end
+end
+AutoBodyResFrame:RegisterEvent("ADDON_LOADED")

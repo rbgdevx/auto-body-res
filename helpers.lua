@@ -41,6 +41,10 @@ NS.UpdateFont = function(frame)
   frame:SetFont(LSM:Fetch("font", NS.db.global.font), NS.db.global.fontsize, "OUTLINE")
 end
 
+NS.UpdateColor = function(frame)
+  frame:SetTextColor(NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a)
+end
+
 NS.secondsToMinutes = function(seconds)
   return seconds / SECONDS_PER_MIN
 end
@@ -99,39 +103,59 @@ NS.RetrieveBody = function()
   end)
 end
 
-NS.IsEpicBattleground = function(instanceName)
-  local EPIC_BATTLEGROUNDS = {
-    ["Alterac Valley"] = true,
-    ["Ashran"] = true,
-    ["Isle of Conquest"] = true,
-    ["Battle for Wintergrasp"] = true,
+NS.IsEpicBattleground = function(instanceID)
+  local INSTANCE_IDS = {
+    [30] = true,
+    [1191] = true,
+    [2118] = true,
+    [628] = true,
+    [2197] = true,
   }
-  return EPIC_BATTLEGROUNDS[instanceName]
+  return INSTANCE_IDS[instanceID]
 end
 
-NS.isMapAllowed = function(instanceName)
-  local MAPS = {
-    -- battlegrounds
-    ["Arathi Basin"] = NS.db.global.arathibasin,
-    ["Deephaul Ravine"] = NS.db.global.deephaulravine,
-    ["Deepwind Gorge"] = NS.db.global.deepwindgorge,
-    ["Eye of the Storm"] = NS.db.global.eyeofthestorm,
-    ["Seething Shore"] = NS.db.global.seethingshore,
-    ["Silvershard Mines"] = NS.db.global.silvershardmines,
-    ["The Battle for Gilneas"] = NS.db.global.thebattleforgilneas,
-    ["Temple of Kotmogu"] = NS.db.global.templeofkotmogu,
-    ["Twin Peaks"] = NS.db.global.twinpeaks,
-    ["Warsong Gulch"] = NS.db.global.warsonggulch,
-    -- epic battlegrounds
-    ["Alterac Valley"] = NS.db.global.alteracvalley,
-    ["Ashran"] = NS.db.global.ashran,
-    ["Battle for Wintergrasp"] = NS.db.global.battleforwintergrasp,
-    ["Isle of Conquest"] = NS.db.global.isleofconquest,
-    -- brawl battlegrounds
-    ["Arathi Basin Winter"] = NS.db.global.arathiblizzard,
-    ["Korrak's Revenge"] = NS.db.global.korraksrevenge,
+NS.isEpicBattlegroundAllowed = function(instanceID)
+  local INSTANCE_IDS = {
+    [30] = NS.db.global.alteracvalley,
+    [1191] = NS.db.global.ashran,
+    [2118] = NS.db.global.battleforwintergrasp,
+    [628] = NS.db.global.isleofconquest,
+    [2197] = NS.db.global.korraksrevenge, -- isBrawl
+    -- [2] = NS.db.global.classicashran, -- isBrawl
+    -- [9] = NS.db.global.tarrenmillvssouthshore, -- isBrawl
   }
-  return MAPS[instanceName]
+  return INSTANCE_IDS[instanceID]
+end
+
+NS.isBrawlAllowed = function(brawlID)
+  local BRAWL_IDS = {
+    -- [1] = NS.db.global.arathiblizzard,
+    -- [3] = NS.db.global.compstomp,
+    [17] = NS.db.global.cookingimpossible,
+    -- [5] = NS.db.global.deepsix,
+    -- [6] = NS.db.global.deepwinddunk,
+    -- [7] = NS.db.global.gravitylapse,
+    -- [10] = NS.db.global.templeofhotmogu,
+    [9] = NS.db.global.warsongscramble,
+  }
+  return BRAWL_IDS[brawlID]
+end
+
+NS.isBattlegroundAllowed = function(instanceID)
+  local INSTANCE_IDS = {
+    [2107] = NS.db.global.arathibasin,
+    [2656] = NS.db.global.deephaulravine,
+    [2245] = NS.db.global.deepwindgorge,
+    [566] = NS.db.global.eyeofthestorm,
+    [968] = NS.db.global.eyeofthestorm,
+    [1803] = NS.db.global.seethingshore,
+    [727] = NS.db.global.silvershardmines,
+    [761] = NS.db.global.thebattleforgilneas,
+    [998] = NS.db.global.templeofkotmogu,
+    [726] = NS.db.global.twinpeaks,
+    [2106] = NS.db.global.warsonggulch,
+  }
+  return INSTANCE_IDS[instanceID]
 end
 
 NS.CopyTable = function(src, dest)

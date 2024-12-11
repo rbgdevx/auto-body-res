@@ -1,5 +1,11 @@
 # Auto Body Res
 
+## [v1.1.8](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.8) (2024-12-10)
+
+- Refactoring map check to use instanceID and brawlID instead of names for cross region support
+- Refactoring options setup to be more streamlined and to use a new db change function
+- Update all map option to be fully inclusive of all possible maps and brawls
+
 ## [v1.1.7](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.7) (2024-11-04)
 
 - Fixing placeholder text hide/show settings

@@ -1,30 +1,6 @@
 local AddonName, NS = ...
 
-local LibStub = LibStub
 local CopyTable = CopyTable
-local next = next
-local IsInInstance = IsInInstance
-local GetInstanceInfo = GetInstanceInfo
-
-local IsBattleground = C_PvP.IsBattleground
-local IsRatedSoloRBG = C_PvP.IsRatedSoloRBG
-local IsRatedBattleground = C_PvP.IsRatedBattleground
-local IsInBrawl = C_PvP.IsInBrawl
-
----@type AutoBodyRes
-local AutoBodyRes = NS.AutoBodyRes
-local AutoBodyResFrame = NS.AutoBodyRes.frame
-
-local Options = {}
-NS.Options = Options
-
-local DEAD_EVENTS = {
-  "PLAYER_DEAD",
-  "PLAYER_SKINNED",
-  "CORPSE_IN_RANGE",
-  "RESURRECT_REQUEST",
-  "PLAYER_UNGHOST",
-}
 
 NS.AceConfig = {
   name = AddonName,
@@ -42,11 +18,7 @@ NS.AceConfig = {
           order = 1,
           set = function(_, val)
             NS.db.global.lock = val
-            if val then
-              NS.Interface:Lock(NS.Interface.textFrame)
-            else
-              NS.Interface:Unlock(NS.Interface.textFrame)
-            end
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.lock
@@ -60,33 +32,7 @@ NS.AceConfig = {
           order = 2,
           set = function(_, val)
             NS.db.global.test = val
-
-            local isInInstance = IsInInstance()
-            if isInInstance == false then
-              if val then
-                if NS.db.global.outside then
-                  if not NS.isDead() then
-                    NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
-                    NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
-                    NS.Interface.textFrame:Show()
-                  end
-                else
-                  NS.Interface.text:SetText(NS.PLACEHOLDER_TEXT)
-                  NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
-                  NS.Interface.textFrame:Show()
-                end
-              else
-                if NS.db.global.outside then
-                  if not NS.isDead() then
-                    NS.Interface.textFrame:Hide()
-                    NS.Interface.text:SetText("")
-                  end
-                else
-                  NS.Interface.textFrame:Hide()
-                  NS.Interface.text:SetText("")
-                end
-              end
-            end
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.test
@@ -126,12 +72,7 @@ NS.AceConfig = {
           order = 5,
           set = function(_, val)
             NS.db.global.text = val
-
-            if val then
-              NS.Interface.textFrame:SetAlpha(1)
-            else
-              NS.Interface.textFrame:SetAlpha(0)
-            end
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.text
@@ -145,19 +86,7 @@ NS.AceConfig = {
           order = 6,
           set = function(_, val)
             NS.db.global.outside = val
-
-            local isInInstance = IsInInstance()
-            if isInInstance == false then
-              if val then
-                NS.Interface.textFrame:Show()
-                FrameUtil.RegisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-              else
-                if not NS.db.global.test then
-                  NS.Interface.textFrame:Hide()
-                end
-                FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-              end
-            end
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.outside
@@ -169,27 +98,21 @@ NS.AceConfig = {
           inline = true,
           order = 7,
           args = {
+            description = {
+              name = "These settings override any relevant maps selected in the maps tab settings.",
+              type = "description",
+              order = 1,
+            },
+            spacing1 = { type = "description", order = 2, name = " " },
             disableblitz = {
               name = "Disable in 8v8 Rated Blitz",
               desc = "Toggling this feature on will disable in rated blitz.",
               type = "toggle",
               width = "double",
-              order = 1,
+              order = 3,
               set = function(_, val)
                 NS.db.global.disableblitz = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local isBlitz = IsRatedSoloRBG()
-                    local dontShowInBlitz = isBlitz and val
-                    if dontShowInBlitz then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.disableblitz
@@ -200,23 +123,10 @@ NS.AceConfig = {
               desc = "Toggling this feature on will disable in non-blitz rated bgs.",
               type = "toggle",
               width = "double",
-              order = 2,
+              order = 4,
               set = function(_, val)
                 NS.db.global.disablerated = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local isBlitz = IsRatedSoloRBG()
-                    local isRated = IsRatedBattleground()
-                    local dontShowInRated = isRated and isBlitz == false and val
-                    if dontShowInRated then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.disablerated
@@ -227,23 +137,10 @@ NS.AceConfig = {
               desc = "Toggling this feature on will disable in random bgs.",
               type = "toggle",
               width = "double",
-              order = 3,
+              order = 5,
               set = function(_, val)
                 NS.db.global.disablerandom = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local isBlitz = IsRatedSoloRBG()
-                    local isRated = IsRatedBattleground()
-                    local dontShowInRandom = isBlitz == false and isRated == false and val
-                    if dontShowInRandom then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.disablerandom
@@ -254,23 +151,10 @@ NS.AceConfig = {
               desc = "Toggling this feature on will disable in epic bgs.",
               type = "toggle",
               width = "double",
-              order = 4,
+              order = 6,
               set = function(_, val)
                 NS.db.global.disableepic = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isEpic = NS.isEpicBattleground(name)
-                    local dontShowInEpic = isEpic and val
-                    if dontShowInEpic then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.disableepic
@@ -281,22 +165,10 @@ NS.AceConfig = {
               desc = "Toggling this feature on will disable in pvp brawls.",
               type = "toggle",
               width = "double",
-              order = 5,
+              order = 7,
               set = function(_, val)
                 NS.db.global.disablebrawl = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local isBrawl = IsInBrawl()
-                    local dontShowInBrawl = isBrawl and val
-                    if dontShowInBrawl then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.disablebrawl
@@ -314,8 +186,7 @@ NS.AceConfig = {
           step = 1,
           set = function(_, val)
             NS.db.global.fontsize = val
-            NS.UpdateFont(NS.Interface.text)
-            NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.fontsize
@@ -330,8 +201,7 @@ NS.AceConfig = {
           values = AceGUIWidgetLSMlists.font,
           set = function(_, val)
             NS.db.global.font = val
-            NS.UpdateFont(NS.Interface.text)
-            NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.font
@@ -348,7 +218,7 @@ NS.AceConfig = {
             NS.db.global.color.g = val2
             NS.db.global.color.b = val3
             NS.db.global.color.a = val4
-            NS.Interface.text:SetTextColor(val1, val2, val3, val4)
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
@@ -362,8 +232,7 @@ NS.AceConfig = {
           func = function()
             AutoBodyResDB = CopyTable(NS.DefaultDatabase)
             NS.db = CopyTable(NS.DefaultDatabase)
-            NS.UpdateFont(NS.Interface.text)
-            NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
+            NS.OnDbChanged()
           end,
         },
       },
@@ -374,13 +243,13 @@ NS.AceConfig = {
       type = "group",
       args = {
         description = {
-          name = "These settings only matter if you have the matching game mode enabled in the general settings.",
+          name = "These settings only matter if you have the matching game mode enabled in the general tab settings.",
           type = "description",
           fontSize = "medium",
           width = "double",
           order = 1,
         },
-        spacing1 = { type = "description", order = 2, name = " " },
+        spacing2 = { type = "description", order = 2, name = " " },
         allmaps = {
           name = "Enable for all maps",
           desc = "Toggling this feature on will enable in all battleground maps.",
@@ -389,6 +258,7 @@ NS.AceConfig = {
           order = 3,
           set = function(_, val)
             NS.db.global.allmaps = val
+            NS.OnDbChanged()
           end,
           get = function(_)
             return NS.db.global.allmaps
@@ -415,19 +285,7 @@ NS.AceConfig = {
               order = 1,
               set = function(_, val)
                 NS.db.global.arathibasin = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Arathi Basin" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.arathibasin
@@ -441,19 +299,7 @@ NS.AceConfig = {
               order = 2,
               set = function(_, val)
                 NS.db.global.deephaulravine = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Deephaul Ravine" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.deephaulravine
@@ -467,19 +313,7 @@ NS.AceConfig = {
               order = 3,
               set = function(_, val)
                 NS.db.global.deepwindgorge = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Deepwind Gorge" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.deepwindgorge
@@ -493,19 +327,7 @@ NS.AceConfig = {
               order = 4,
               set = function(_, val)
                 NS.db.global.eyeofthestorm = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Eye of the Storm" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.eyeofthestorm
@@ -519,19 +341,7 @@ NS.AceConfig = {
               order = 5,
               set = function(_, val)
                 NS.db.global.seethingshore = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Seething Shore" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.seethingshore
@@ -545,19 +355,7 @@ NS.AceConfig = {
               order = 6,
               set = function(_, val)
                 NS.db.global.silvershardmines = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Silvershard Mines" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.silvershardmines
@@ -571,19 +369,7 @@ NS.AceConfig = {
               order = 7,
               set = function(_, val)
                 NS.db.global.thebattleforgilneas = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "The Battle for Gilneas" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.thebattleforgilneas
@@ -597,19 +383,7 @@ NS.AceConfig = {
               order = 8,
               set = function(_, val)
                 NS.db.global.templeofkotmogu = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Temple of Kotmogu" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.templeofkotmogu
@@ -623,19 +397,7 @@ NS.AceConfig = {
               order = 9,
               set = function(_, val)
                 NS.db.global.twinpeaks = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Twin Peaks" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.twinpeaks
@@ -649,19 +411,7 @@ NS.AceConfig = {
               order = 10,
               set = function(_, val)
                 NS.db.global.warsonggulch = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Warsong Gulch" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.warsonggulch
@@ -686,19 +436,7 @@ NS.AceConfig = {
               order = 1,
               set = function(_, val)
                 NS.db.global.alteracvalley = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Alterac Valley" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.alteracvalley
@@ -712,19 +450,7 @@ NS.AceConfig = {
               order = 2,
               set = function(_, val)
                 NS.db.global.ashran = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Ashran" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.ashran
@@ -738,22 +464,24 @@ NS.AceConfig = {
               order = 3,
               set = function(_, val)
                 NS.db.global.battleforwintergrasp = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Battle for Wintergrasp" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.battleforwintergrasp
+              end,
+            },
+            classicashran = {
+              name = "Classic Ashran",
+              desc = "Turn on for Classic Ashran.",
+              type = "toggle",
+              width = "full",
+              order = 4,
+              set = function(_, val)
+                NS.db.global.classicashran = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.classicashran
               end,
             },
             isleofconquest = {
@@ -761,25 +489,41 @@ NS.AceConfig = {
               desc = "Turn on for Isle of Conquest.",
               type = "toggle",
               width = "full",
-              order = 4,
+              order = 5,
               set = function(_, val)
                 NS.db.global.isleofconquest = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Isle of Conquest" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.OnDbChanged()
               end,
               get = function(_)
                 return NS.db.global.isleofconquest
+              end,
+            },
+            korraksrevenge = {
+              name = "Korrak's Revenge",
+              desc = "Turn on for Korrak's Revenge.",
+              type = "toggle",
+              width = "full",
+              order = 6,
+              set = function(_, val)
+                NS.db.global.korraksrevenge = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.korraksrevenge
+              end,
+            },
+            tarrenmillvssouthshore = {
+              name = "Tarren Mill vs Southshore",
+              desc = "Turn on for Tarren Mill vs Southshore.",
+              type = "toggle",
+              width = "full",
+              order = 7,
+              set = function(_, val)
+                NS.db.global.tarrenmillvssouthshore = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.tarrenmillvssouthshore
               end,
             },
           },
@@ -800,49 +544,109 @@ NS.AceConfig = {
               width = "full",
               order = 1,
               set = function(_, val)
-                NS.db.global.korraksrevenge = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Arathi Basin Winter" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.db.global.arathiblizzard = val
+                NS.OnDbChanged()
               end,
               get = function(_)
-                return NS.db.global.korraksrevenge
+                return NS.db.global.arathiblizzard
               end,
             },
-            korraksrevenge = {
-              name = "Korrak's Revenge",
-              desc = "Turn on for Korrak's Revenge.",
+            compstomp = {
+              name = "Comp Stomp",
+              desc = "Turn on for Comp Stomp.",
               type = "toggle",
               width = "full",
               order = 2,
               set = function(_, val)
-                NS.db.global.korraksrevenge = val
-
-                local isInInstance, instanceType = IsInInstance()
-                if isInInstance then
-                  local isBattleground = instanceType == "pvp" or IsBattleground()
-                  if isBattleground then
-                    local name = GetInstanceInfo()
-                    local isMapAllowed = name == "Korrak's Revenge" and val
-                    if not isMapAllowed then
-                      NS.Interface.textFrame:Hide()
-                      FrameUtil.UnregisterFrameForEvents(AutoBodyResFrame, DEAD_EVENTS)
-                    end
-                  end
-                end
+                NS.db.global.compstomp = val
+                NS.OnDbChanged()
               end,
               get = function(_)
-                return NS.db.global.korraksrevenge
+                return NS.db.global.compstomp
+              end,
+            },
+            cookingimpossible = {
+              name = "Cooking Impossible",
+              desc = "Turn on for Cooking Impossible.",
+              type = "toggle",
+              width = "full",
+              order = 3,
+              set = function(_, val)
+                NS.db.global.cookingimpossible = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.cookingimpossible
+              end,
+            },
+            deepsix = {
+              name = "Deep Six",
+              desc = "Turn on for Deep Six.",
+              type = "toggle",
+              width = "full",
+              order = 4,
+              set = function(_, val)
+                NS.db.global.deepsix = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.deepsix
+              end,
+            },
+            deepwinddunk = {
+              name = "Deepwind Dunk",
+              desc = "Turn on for Deepwind Dunk.",
+              type = "toggle",
+              width = "full",
+              order = 5,
+              set = function(_, val)
+                NS.db.global.deepwinddunk = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.deepwinddunk
+              end,
+            },
+            gravitylapse = {
+              name = "Gravity Lapse",
+              desc = "Turn on for Gravity Lapse.",
+              type = "toggle",
+              width = "full",
+              order = 6,
+              set = function(_, val)
+                NS.db.global.gravitylapse = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.gravitylapse
+              end,
+            },
+            templeofhotmogu = {
+              name = "Temple of Hotmogu",
+              desc = "Turn on for Temple of Hotmogu.",
+              type = "toggle",
+              width = "full",
+              order = 7,
+              set = function(_, val)
+                NS.db.global.templeofhotmogu = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.templeofhotmogu
+              end,
+            },
+            warsongscramble = {
+              name = "Warsong Scramble",
+              desc = "Turn on for Warsong Scramble.",
+              type = "toggle",
+              width = "full",
+              order = 8,
+              set = function(_, val)
+                NS.db.global.warsongscramble = val
+                NS.OnDbChanged()
+              end,
+              get = function(_)
+                return NS.db.global.warsongscramble
               end,
             },
           },
@@ -851,48 +655,3 @@ NS.AceConfig = {
     },
   },
 }
-
-function Options:SlashCommands(message)
-  if message == "toggle lock" then
-    if NS.db.global.lock == false then
-      NS.db.global.lock = true
-    else
-      NS.db.global.lock = false
-    end
-  else
-    LibStub("AceConfigDialog-3.0"):Open(AddonName)
-  end
-end
-
-function Options:Setup()
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(AddonName, NS.AceConfig)
-  LibStub("AceConfigDialog-3.0"):AddToBlizOptions(AddonName, AddonName)
-
-  SLASH_ABR1 = AddonName
-  SLASH_ABR2 = "/abr"
-
-  function SlashCmdList.ABR(message)
-    self:SlashCommands(message)
-  end
-end
-
-function AutoBodyRes:ADDON_LOADED(addon)
-  if addon == AddonName then
-    AutoBodyResFrame:UnregisterEvent("ADDON_LOADED")
-
-    AutoBodyResDB = AutoBodyResDB and next(AutoBodyResDB) ~= nil and AutoBodyResDB or {}
-
-    -- Copy any settings from default if they don't exist in current profile
-    NS.CopyDefaults(NS.DefaultDatabase, AutoBodyResDB)
-
-    -- Reference to active db profile
-    -- Always use this directly or reference will be invalid
-    NS.db = AutoBodyResDB
-
-    -- Remove table values no longer found in default settings
-    NS.CleanupDB(AutoBodyResDB, NS.DefaultDatabase)
-
-    Options:Setup()
-  end
-end
-AutoBodyResFrame:RegisterEvent("ADDON_LOADED")
