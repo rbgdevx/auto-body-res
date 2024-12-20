@@ -1,9 +1,9 @@
-## Interface: 110005
+## Interface: 110007
 ## Title: AutoBodyRes
-## Version: 1.1.8
+## Version: 1.1.9
 ## Author: RBGDEV
 ## Notes: Shows text if someone took your body or not after you died in a battleground, preventing you from being able to body res.
-## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+## OptionalDeps: AceConfig-3.0, AceGUI-3.0, AceGUI-3.0-SharedMediaWidgets, CallbackHandler-1.0, LibSharedMedia-3.0, LibStub
 ## IconTexture: Interface\AddOns\AutoBodyRes\logo.tga
 ## SavedVariables: AutoBodyResDB
 ## X-Category: Battlegrounds/PvP

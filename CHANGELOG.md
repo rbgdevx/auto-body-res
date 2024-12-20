@@ -1,5 +1,13 @@
 # Auto Body Res
 
+## [v1.1.9](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.9) (2024-12-20)
+
+- Drag and Click control updates to ensure click through when hidden or locked
+- Fixing font dropdown list
+- Updating font size range
+- Minor Cleanup
+- Update toc
+
 ## [v1.1.8](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.8) (2024-12-10)
 
 - Refactoring map check to use instanceID and brawlID instead of names for cross region support
