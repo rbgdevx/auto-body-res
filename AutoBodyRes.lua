@@ -9,6 +9,9 @@ local IsInInstance = IsInInstance
 local GetCorpseRecoveryDelay = GetCorpseRecoveryDelay -- Time left before a player can accept a resurrection.
 -- local PortGraveyard = PortGraveyard -- Returns the player to the graveyard.
 
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+
 local After = C_Timer.After
 local Ticker = C_Timer.NewTicker
 local IsBattleground = C_PvP.IsBattleground
@@ -407,13 +410,13 @@ function NS.Options_SlashCommands(message)
       NS.Interface:Unlock(NS.Interface.textFrame)
     end
   else
-    LibStub("AceConfigDialog-3.0"):Open(AddonName)
+    AceConfigDialog:Open(AddonName)
   end
 end
 
 function NS.Options_Setup()
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(AddonName, NS.AceConfig)
-  LibStub("AceConfigDialog-3.0"):AddToBlizOptions(AddonName, AddonName)
+  AceConfig:RegisterOptionsTable(AddonName, NS.AceConfig)
+  AceConfigDialog:AddToBlizOptions(AddonName, AddonName)
 
   SLASH_ABR1 = AddonName
   SLASH_ABR2 = "/abr"
