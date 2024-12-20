@@ -20,7 +20,7 @@ local mmax = math.max
 
 local After = C_Timer.After
 
-local LSM = LibStub("LibSharedMedia-3.0")
+local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 NS.write = function(...)
   local playerClass = select(2, UnitClass("player"))
@@ -38,7 +38,7 @@ NS.UpdateSize = function(frame, text)
 end
 
 NS.UpdateFont = function(frame)
-  frame:SetFont(LSM:Fetch("font", NS.db.global.font), NS.db.global.fontsize, "OUTLINE")
+  frame:SetFont(SharedMedia:Fetch("font", NS.db.global.font), NS.db.global.fontsize, "OUTLINE")
 end
 
 NS.UpdateColor = function(frame)

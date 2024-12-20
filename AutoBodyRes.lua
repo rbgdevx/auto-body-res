@@ -401,8 +401,10 @@ function NS.Options_SlashCommands(message)
   if message == "toggle lock" then
     if NS.db.global.lock == false then
       NS.db.global.lock = true
+      NS.Interface:Lock(NS.Interface.textFrame)
     else
       NS.db.global.lock = false
+      NS.Interface:Unlock(NS.Interface.textFrame)
     end
   else
     LibStub("AceConfigDialog-3.0"):Open(AddonName)

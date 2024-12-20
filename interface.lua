@@ -4,25 +4,30 @@ local CreateFrame = CreateFrame
 local LibStub = LibStub
 local GetTime = GetTime
 
+local sformat = string.format
+
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+
 local Interface = {}
 NS.Interface = Interface
 
-local sformat = string.format
-
-function Interface:StopMovement(frame)
+function Interface:MakeUnmovable(frame)
   frame:SetMovable(false)
+  frame:RegisterForDrag()
+  frame:SetScript("OnDragStart", nil)
+  frame:SetScript("OnDragStop", nil)
 end
 
 function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
-    if NS.db.global.lock == false then
+    if NS.db.global.lock == false and frame:IsVisible() and frame:GetAlpha() ~= 0 then
       f:StartMoving()
     end
   end)
   frame:SetScript("OnDragStop", function(f)
-    if NS.db.global.lock == false then
+    if NS.db.global.lock == false and frame:IsVisible() and frame:GetAlpha() ~= 0 then
       f:StopMovingOrSizing()
       local a, _, b, c, d = f:GetPoint()
       NS.db.global.position[1] = a
@@ -33,29 +38,30 @@ function Interface:MakeMoveable(frame)
   end)
 end
 
-function Interface:Lock(frame)
-  self:StopMovement(frame)
-end
-
-function Interface:Unlock(frame)
-  self:MakeMoveable(frame)
+function Interface:RemoveControls(frame)
+  frame:EnableMouse(false)
+  frame:SetScript("OnMouseUp", nil)
 end
 
 function Interface:AddControls(frame)
   frame:EnableMouse(true)
   frame:SetScript("OnMouseUp", function(_, btn)
-    if NS.db.global.lock == false then
+    if NS.db.global.lock == false and not IsInInstance() and frame:IsVisible() and frame:GetAlpha() ~= 0 then
       if btn == "RightButton" then
-        LibStub("AceConfigDialog-3.0"):Open(AddonName)
+        AceConfigDialog:Open(AddonName)
       end
     end
   end)
+end
 
-  if NS.db.global.lock then
-    self:StopMovement(frame)
-  else
-    self:MakeMoveable(frame)
-  end
+function Interface:Lock(frame)
+  self:RemoveControls(frame)
+  self:MakeUnmovable(frame)
+end
+
+function Interface:Unlock(frame)
+  self:AddControls(frame)
+  self:MakeMoveable(frame)
 end
 
 local function stopAnimation(frame, animationGroup)
@@ -139,7 +145,11 @@ function Interface:CreateInterface()
     Interface.text = Text
     Interface.textFrame = TextFrame
 
-    self:AddControls(Interface.textFrame)
+    if NS.db.global.lock then
+      self:Lock(Interface.textFrame)
+    else
+      self:Unlock(Interface.textFrame)
+    end
 
     Interface.timerAnimationGroup = self:CreateTimerAnimation(Interface.textFrame)
     Interface.flashAnimationGroup = self:CreateFlashAnimation(Interface.textFrame)
