@@ -37,7 +37,8 @@
     "HOURS_MINUTES_SECONDS",
     "MINUTES_SECONDS",
     "ButtonFrameTemplate_HidePortrait",
-    "CopyTable"
+    "CopyTable",
+    "GetClassColor"
   ],
   "Lua.runtime.version": "Lua 5.1",
   "Lua.runtime.builtin": {
@@ -52,6 +53,6 @@
     "utf8": "disable"
   },
   "Lua.workspace.library": [
-    "~\\.vscode\\extensions\\ketho.wow-api-0.18.0\\Annotations"
+    "~\\.vscode\\extensions\\ketho.wow-api-0.18.2\\Annotations"
   ]
 }

@@ -105,11 +105,13 @@ end
 
 NS.IsEpicBattleground = function(instanceID)
   local INSTANCE_IDS = {
-    [30] = true,
-    [1191] = true,
-    [2118] = true,
-    [628] = true,
-    [2197] = true,
+    [30] = true, -- alteracvalley
+    [1191] = true, -- ashran
+    [2118] = true, -- battleforwintergrasp
+    [628] = true, -- isleofconquest
+    [2197] = true, -- korraksrevenge -- isBrawl
+    -- [2] = true, -- classicashran -- isBrawl -- needs instance id check
+    [1280] = true, -- tarrenmillvssouthshore -- isBrawl
   }
   return INSTANCE_IDS[instanceID]
 end
@@ -121,22 +123,25 @@ NS.isEpicBattlegroundAllowed = function(instanceID)
     [2118] = NS.db.global.battleforwintergrasp,
     [628] = NS.db.global.isleofconquest,
     [2197] = NS.db.global.korraksrevenge, -- isBrawl
-    -- [2] = NS.db.global.classicashran, -- isBrawl
-    -- [9] = NS.db.global.tarrenmillvssouthshore, -- isBrawl
+    -- [1191] = NS.db.global.classicashran, -- isBrawl
+    [1280] = NS.db.global.tarrenmillvssouthshore, -- isBrawl
   }
   return INSTANCE_IDS[instanceID]
 end
 
 NS.isBrawlAllowed = function(brawlID)
   local BRAWL_IDS = {
-    -- [1] = NS.db.global.arathiblizzard,
-    -- [3] = NS.db.global.compstomp,
+    [5] = NS.db.global.arathiblizzard,
+    [0] = NS.db.global.compstomp,
     [17] = NS.db.global.cookingimpossible,
-    -- [5] = NS.db.global.deepsix,
-    -- [6] = NS.db.global.deepwinddunk,
-    -- [7] = NS.db.global.gravitylapse,
-    -- [10] = NS.db.global.templeofhotmogu,
+    [11] = NS.db.global.deepsix,
+    -- [6] = NS.db.global.deepwinddunk, -- needs brawl id check
+    [4] = NS.db.global.gravitylapse,
+    [3] = NS.db.global.templeofhotmogu,
     [9] = NS.db.global.warsongscramble,
+    -- [2197] = true, -- korraksrevenge -- needs brawl id check
+    [120] = NS.db.global.classicashran, -- classicashran
+    [2] = NS.db.global.tarrenmillvssouthshore, -- tarrenmillvssouthshore
   }
   return BRAWL_IDS[brawlID]
 end

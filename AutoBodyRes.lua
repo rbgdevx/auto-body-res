@@ -19,6 +19,7 @@ local IsRatedSoloRBG = C_PvP.IsRatedSoloRBG
 local IsRatedBattleground = C_PvP.IsRatedBattleground
 local IsInBrawl = C_PvP.IsInBrawl
 local GetActiveBrawlInfo = C_PvP.GetActiveBrawlInfo
+local GetAvailableBrawlInfo = C_PvP.GetAvailableBrawlInfo
 
 ---@type AutoBodyRes
 local AutoBodyRes = NS.AutoBodyRes
@@ -142,9 +143,23 @@ function AutoBodyRes:PlayerDeadEvents()
   self:PlayerDead()
 end
 
+function AutoBodyRes:PVP_BRAWL_INFO_UPDATED()
+  local availableBrawlInfo = GetAvailableBrawlInfo()
+  if availableBrawlInfo ~= nil then
+    AutoBodyResFrame:UnregisterEvent("PVP_BRAWL_INFO_UPDATED")
+    -- print(availableBrawlInfo.name, availableBrawlInfo.brawlID, availableBrawlInfo.brawlType)
+  end
+end
+
 function AutoBodyRes:PLAYER_ENTERING_WORLD()
   After(0, function() -- Some info isn't available until 1 frame after loading is done
     local isInInstance, instanceType = IsInInstance()
+
+    local availableBrawlInfo = GetAvailableBrawlInfo()
+    if availableBrawlInfo ~= nil then
+      AutoBodyResFrame:UnregisterEvent("PVP_BRAWL_INFO_UPDATED")
+      -- print(availableBrawlInfo.name, availableBrawlInfo.brawlID, availableBrawlInfo.brawlType)
+    end
 
     if isInInstance then
       local isBattleground = instanceType == "pvp" or IsBattleground()
@@ -157,19 +172,14 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
         local isBrawl = IsInBrawl()
         local isEpic = NS.IsEpicBattleground(instanceID)
 
-        -- local activeBrawlInfo = GetActiveBrawlInfo()
-        -- print("isBrawl", isBrawl, instanceID)
-        -- if activeBrawlInfo then
-        -- 	print("activeBrawlInfo", activeBrawlInfo.brawlID, activeBrawlInfo.brawlType)
-        -- end
-
         local dontShowInBlitz = isBlitz and NS.db.global.disableblitz
         local dontShowInRated = isRated and isBlitz == false and NS.db.global.disablerated
         local dontShowInRandom = isBlitz == false and isRated == false and NS.db.global.disablerandom
         local dontShowInBrawl = isBrawl and NS.db.global.disablebrawl
         local dontShowInEpic = isEpic and NS.db.global.disableepic
+        local dontShow = dontShowInBlitz or dontShowInRated or dontShowInRandom or dontShowInBrawl or dontShowInEpic
 
-        if dontShowInBlitz or dontShowInRated or dontShowInRandom or dontShowInBrawl or dontShowInEpic then
+        if dontShow then
           Interface:Stop(Interface, Interface.timerAnimationGroup)
           Interface:Stop(Interface, Interface.flashAnimationGroup)
 
@@ -198,6 +208,11 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
         else
           isMapAllowed = NS.isBattlegroundAllowed(instanceID)
         end
+
+        -- print("isBrawl", isBrawl, "instanceID", instanceID)
+        -- if activeBrawlInfo then
+        -- 	print("activeBrawlInfo", activeBrawlInfo.brawlID, activeBrawlInfo.brawlType)
+        -- end
 
         if NS.db.global.allmaps or isMapAllowed then
           if NS.isDead() then
@@ -264,6 +279,7 @@ function AutoBodyRes:PLAYER_LOGIN()
   Interface:CreateInterface()
 
   AutoBodyResFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+  AutoBodyResFrame:RegisterEvent("PVP_BRAWL_INFO_UPDATED")
 end
 AutoBodyResFrame:RegisterEvent("PLAYER_LOGIN")
 

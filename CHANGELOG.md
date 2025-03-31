@@ -1,5 +1,10 @@
 # Auto Body Res
 
+## [v1.2.1](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.2.1) (2025-03-30)
+
+- Updating all brawl and battleground conditional logic
+- Update toc
+
 ## [v1.1.9](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.1.9) (2024-12-20)
 
 - Drag and Click control updates to ensure click through when hidden or locked
