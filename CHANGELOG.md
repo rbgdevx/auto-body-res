@@ -1,5 +1,10 @@
 # Auto Body Res
 
+## [v1.2.2](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.2.2) (2025-05-17)
+
+- Assigning addon to my own category for organization
+- Update toc
+
 ## [v1.2.1](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.2.1) (2025-03-30)
 
 - Updating all brawl and battleground conditional logic

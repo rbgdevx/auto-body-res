@@ -211,7 +211,7 @@ function AutoBodyRes:PLAYER_ENTERING_WORLD()
 
         -- print("isBrawl", isBrawl, "instanceID", instanceID)
         -- if activeBrawlInfo then
-        -- 	print("activeBrawlInfo", activeBrawlInfo.brawlID, activeBrawlInfo.brawlType)
+        --   print("activeBrawlInfo", activeBrawlInfo.brawlID, activeBrawlInfo.brawlType)
         -- end
 
         if NS.db.global.allmaps or isMapAllowed then

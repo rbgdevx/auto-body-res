@@ -110,7 +110,7 @@ NS.IsEpicBattleground = function(instanceID)
     [2118] = true, -- battleforwintergrasp
     [628] = true, -- isleofconquest
     [2197] = true, -- korraksrevenge -- isBrawl
-    -- [2] = true, -- classicashran -- isBrawl -- needs instance id check
+    -- [1191] = true, -- classicashran -- isBrawl
     [1280] = true, -- tarrenmillvssouthshore -- isBrawl
   }
   return INSTANCE_IDS[instanceID]
