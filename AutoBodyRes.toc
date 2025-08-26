@@ -1,22 +1,11 @@
-## Interface: 110105
-## Title: AutoBodyRes
-## Version: 1.2.2
+## Interface: 110200
+## Title: Auto Body Res
+## Version: 1.2.3
 ## Author: RBGDEV
 ## Notes: Shows text if someone took your body or not after you died in a battleground, preventing you from being able to body res.
-## OptionalDeps: AceConfig-3.0, AceGUI-3.0, AceGUI-3.0-SharedMediaWidgets, CallbackHandler-1.0, LibSharedMedia-3.0, LibStub
-## IconTexture: Interface\AddOns\AutoBodyRes\logo.tga
+## IconTexture: Interface/AddOns/AutoBodyRes/logo.tga
 ## SavedVariables: AutoBodyResDB
-## Category-enUS: RBGDEV
-## Category-deDE: RBGDEV
-## Category-esES: RBGDEV
-## Category-esMX: RBGDEV
-## Category-frFR: RBGDEV
-## Category-itIT: RBGDEV
-## Category-koKR: RBGDEV
-## Category-ptBR: RBGDEV
-## Category-ruRU: RBGDEV
-## Category-zhCN: RBGDEV
-## Category-zhTW: RBGDEV
+## Category: RBGDEV
 ## X-Category: Battlegrounds/PvP
 ## X-License: All Rights Reserved
 ## X-Website: https://www.curseforge.com/wow/addons/auto-body-res

@@ -1,5 +1,10 @@
 # Auto Body Res
 
+## [v1.2.3](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.2.3) (2025-08-26)
+
+- Cleanup
+- Update toc
+
 ## [v1.2.2](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.2.2) (2025-05-17)
 
 - Assigning addon to my own category for organization
