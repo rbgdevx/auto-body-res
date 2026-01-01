@@ -3,6 +3,9 @@ local AddonName, NS = ...
 local CreateFrame = CreateFrame
 local LibStub = LibStub
 local GetTime = GetTime
+local issecretvalue = issecretvalue or function(_)
+  return false
+end
 
 local sformat = string.format
 
@@ -10,6 +13,14 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local Interface = {}
 NS.Interface = Interface
+
+local function CanInteractWithFrame(frame)
+  if not frame or not frame.IsVisible or not frame:IsVisible() then
+    return false
+  end
+  local alpha = frame:GetAlpha()
+  return (not issecretvalue(alpha)) and alpha ~= 0
+end
 
 function Interface:MakeUnmovable(frame)
   frame:SetMovable(false)
@@ -22,12 +33,12 @@ function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
-    if NS.db.global.lock == false and frame:IsVisible() and frame:GetAlpha() ~= 0 then
+    if NS.db.global.lock == false and CanInteractWithFrame(frame) then
       f:StartMoving()
     end
   end)
   frame:SetScript("OnDragStop", function(f)
-    if NS.db.global.lock == false and frame:IsVisible() and frame:GetAlpha() ~= 0 then
+    if NS.db.global.lock == false and CanInteractWithFrame(frame) then
       f:StopMovingOrSizing()
       local a, _, b, c, d = f:GetPoint()
       NS.db.global.position[1] = a
@@ -78,13 +89,13 @@ local function animationUpdate(frame, animationGroup)
   local t = GetTime()
   if t >= frame.exp then
     animationGroup:Stop()
-    local str = sformat("%s", "CAN BODY RES NOW")
+    local str = sformat("%s", "BODY RES AVAILABLE")
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
   else
     local time = frame.exp - t
     frame.remaining = time
-    local str = sformat("%s %s", "CAN BODY RES IN", NS.formatTime(time))
+    local str = sformat("%s %s", "BODY RES AVAILABLE IN", NS.formatTime(time))
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
   end
@@ -173,11 +184,11 @@ function Interface:Start(frame, duration)
   end
 
   if duration == 0 then
-    local str = sformat("%s", "CAN BODY RES NOW")
+    local str = sformat("%s", "BODY RES AVAILABLE")
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
   else
-    local str = sformat("%s %s", "CAN BODY RES IN", NS.formatTime(time))
+    local str = sformat("%s %s", "BODY RES AVAILABLE IN", NS.formatTime(time))
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
     frame.timerAnimationGroup:SetScript("OnLoop", function(updatedGroup)

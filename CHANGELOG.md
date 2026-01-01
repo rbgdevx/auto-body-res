@@ -1,5 +1,13 @@
 # Auto Body Res
 
+## [v1.3.0](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.0) (2025-12-31)
+
+- update libs for midnight
+- reducing default font size
+- updating body res text to be more clear and concise
+- handling secret values for moving frames while in-combat or in instances
+- updating settings
+
 ## [v1.2.3](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.2.3) (2025-08-26)
 
 - Cleanup

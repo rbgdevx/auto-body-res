@@ -95,18 +95,19 @@ NS.AceConfig = {
             return NS.db.global.outside
           end,
         },
+        spacer1 = { name = " ", type = "description", order = 7, width = "full" },
         disablegroup = {
-          name = "Choose what content this should not load in",
+          name = "Choose what content this should not work in",
           type = "group",
           inline = true,
-          order = 7,
+          order = 8,
           args = {
             description = {
               name = "These settings override any relevant maps selected in the maps tab settings.",
               type = "description",
               order = 1,
             },
-            spacing1 = { type = "description", order = 2, name = " " },
+            spacer1 = { type = "description", order = 2, name = " " },
             disableblitz = {
               name = "Disable in 8v8 Rated Blitz",
               desc = "Toggling this feature on will disable in rated blitz.",
@@ -179,11 +180,12 @@ NS.AceConfig = {
             },
           },
         },
+        spacer2 = { name = " ", type = "description", order = 9, width = "full" },
         fontsize = {
           type = "range",
           name = "Font Size",
           width = "double",
-          order = 8,
+          order = 10,
           min = 2,
           max = 64,
           step = 1,
@@ -195,11 +197,12 @@ NS.AceConfig = {
             return NS.db.global.fontsize
           end,
         },
+        spacer3 = { name = " ", type = "description", order = 11, width = "full" },
         font = {
           type = "select",
           name = "Font",
-          width = "double",
-          order = 9,
+          width = 1.5,
+          order = 12,
           dialogControl = "LSM30_Font",
           values = SharedMedia:HashTable("font"),
           set = function(_, val)
@@ -210,11 +213,12 @@ NS.AceConfig = {
             return NS.db.global.font
           end,
         },
+        spacer4 = { name = "", type = "description", order = 13, width = 0.1 },
         color = {
           type = "color",
           name = "Color",
-          width = "full",
-          order = 10,
+          width = 0.5,
+          order = 14,
           hasAlpha = true,
           set = function(_, val1, val2, val3, val4)
             NS.db.global.color.r = val1
@@ -227,6 +231,7 @@ NS.AceConfig = {
             return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
           end,
         },
+        spacer5 = { type = "description", order = 15, name = " ", width = "full" },
         reset = {
           name = "Reset Everything",
           type = "execute",
@@ -252,7 +257,7 @@ NS.AceConfig = {
           width = "double",
           order = 1,
         },
-        spacing2 = { type = "description", order = 2, name = " " },
+        spacer1 = { type = "description", order = 2, name = " " },
         allmaps = {
           name = "Enable for all maps",
           desc = "Toggling this feature on will enable in all battleground maps.",

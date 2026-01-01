@@ -1,6 +1,6 @@
-## Interface: 110200
+## Interface: 120001, 120000, 110207
 ## Title: Auto Body Res
-## Version: 1.2.3
+## Version: 1.3.0
 ## Author: RBGDEV
 ## Notes: Shows text if someone took your body or not after you died in a battleground, preventing you from being able to body res.
 ## IconTexture: Interface/AddOns/AutoBodyRes/logo.tga
