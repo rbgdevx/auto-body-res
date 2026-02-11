@@ -9,14 +9,12 @@ local getmetatable = getmetatable
 local setmetatable = setmetatable
 local RetrieveCorpse = RetrieveCorpse -- Resurrects when the player is standing near its corpse.
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local format = format
 local select = select
 local UnitClass = UnitClass
 local GetClassColor = GetClassColor
 local print = print
 
 local mfloor = math.floor
-local mmax = math.max
 
 local After = C_Timer.After
 
@@ -53,33 +51,7 @@ NS.minutesToSeconds = function(minutes)
   return minutes * SECONDS_PER_MIN
 end
 
-function ConvertSecondsToUnits(timestamp)
-  timestamp = mmax(timestamp, 0)
-  local days = mfloor(timestamp / SECONDS_PER_DAY)
-  timestamp = timestamp - (days * SECONDS_PER_DAY)
-  local hours = mfloor(timestamp / SECONDS_PER_HOUR)
-  timestamp = timestamp - (hours * SECONDS_PER_HOUR)
-  local minutes = mfloor(timestamp / SECONDS_PER_MIN)
-  timestamp = timestamp - (minutes * SECONDS_PER_MIN)
-  local seconds = mfloor(timestamp)
-  local milliseconds = timestamp - seconds
-  return {
-    days = days,
-    hours = hours,
-    minutes = minutes,
-    seconds = seconds,
-    milliseconds = milliseconds,
-  }
-end
-
-NS.secondsToClock = function(seconds, displayZeroHours)
-  local units = ConvertSecondsToUnits(seconds)
-  if units.hours > 0 or displayZeroHours then
-    return format(HOURS_MINUTES_SECONDS, units.hours, units.minutes, units.seconds)
-  else
-    return format(MINUTES_SECONDS, units.minutes, units.seconds)
-  end
-end
+NS.secondsToClock = SecondsToClock
 
 NS.getSeconds = function(time)
   return time % SECONDS_PER_MIN
