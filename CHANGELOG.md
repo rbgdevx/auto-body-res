@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.3.2](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.2) (2026-04-22)
+
+- Update toc
+
 ## [v1.3.1](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.1) (2026-02-11)
 
 - fixing errors for showing timer
