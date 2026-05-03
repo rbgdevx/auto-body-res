@@ -95,7 +95,7 @@ local function animationUpdate(frame, animationGroup)
   else
     local time = frame.exp - t
     frame.remaining = time
-    local str = sformat("%s %s", "BODY RES AVAILABLE IN", NS.formatTime(time))
+    local str = sformat("%s %s", "BODY RES IN", NS.formatTime(time))
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
   end
@@ -188,7 +188,7 @@ function Interface:Start(frame, duration)
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
   else
-    local str = sformat("%s %s", "BODY RES AVAILABLE IN", NS.formatTime(time))
+    local str = sformat("%s %s", "BODY RES IN", NS.formatTime(time))
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
     frame.timerAnimationGroup:SetScript("OnLoop", function(updatedGroup)

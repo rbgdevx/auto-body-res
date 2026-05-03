@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    ".git/**",
+    ".libraries/**",
+    "libs/**",
+    "*.lock",
+    "*.zip"
+  ],
+  "words": [
+    "abr",
+    "addon",
+    "addons",
+    "autobodyres",
+    "battleground",
+    "battlegrounds",
+    "bodyres",
+    "brawl",
+    "corpse",
+    "deathinfo",
+    "ghost",
+    "hooksecurefunc",
+    "libstub",
+    "luals",
+    "pvp",
+    "resurrect",
+    "resurrection",
+    "rgba",
+    "soulstone",
+    "spirithealer",
+    "stylua",
+    "wow"
+  ],
+  "flagWords": [],
+  "allowCompoundWords": true
+}

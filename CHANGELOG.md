@@ -1,5 +1,11 @@
 # Auto Body Res
 
+## [v1.3.3](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.3) (2026-05-03)
+
+- Adding text body rest into the default pvp gy window
+- Keeping the default pvp gy window available even when you leave the gy so you have access to the timer until its gone
+- Updating body res text
+
 ## [v1.3.2](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.2) (2026-04-22)
 
 - Update toc
