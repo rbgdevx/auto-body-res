@@ -99,6 +99,12 @@ local function animationUpdate(frame, animationGroup)
     frame.text:SetText(str)
     NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
   end
+
+  -- Mirror the same value into the popup SubText this frame, so the two
+  -- stay in lockstep instead of drifting until popup.lua's next sample tick.
+  if NS.RefreshPopupSubText then
+    NS.RefreshPopupSubText()
+  end
 end
 
 function Interface:CreateFlashAnimation(frame)

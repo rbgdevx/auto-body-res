@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.3.4](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.4) (2026-05-04)
+
+- Ensuring default pvp gy window goes away when leaving the gy res area
+
 ## [v1.3.3](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.3) (2026-05-03)
 
 - Adding text body rest into the default pvp gy window

@@ -11,23 +11,15 @@ local hooksecurefunc = hooksecurefunc
 
 local POPUP = "AREA_SPIRIT_HEAL"
 local PLACEHOLDER_SUBTEXT = " "
-local SUBTEXT_OFFSET_Y = -2
+local SUBTEXT_OFFSET_Y = -8
+
+-- Gap between GhostFrame ("Return to Graveyard") and the top of our popup.
+local GHOSTFRAME_GAP = -10
 
 -- Wave anchor: absolute GetTime() at which the current GY res wave will fire.
 -- All timer math derives from this, so values stay accurate regardless of
 -- in-range / OOR transitions or popup hide-and-show churn.
 local gyEndTime = nil
-
--- ---------------------------------------------------------------------------
--- Stop UIParent from hiding the popup whenever the player walks out of range.
--- That's the only thing UIParent's OOR handler does (see Blizzard_UIParent
--- UIParent.lua), so unregistering it is safe and prevents the visible flash
--- between Blizzard's hide and our re-show.
--- ---------------------------------------------------------------------------
-
-if UIParent and UIParent.UnregisterEvent then
-  UIParent:UnregisterEvent("AREA_SPIRIT_HEALER_OUT_OF_RANGE")
-end
 
 -- ---------------------------------------------------------------------------
 -- Inject SubText support into the AREA_SPIRIT_HEAL dialog definition.
@@ -68,6 +60,15 @@ local function getMirroredText()
   return toTitleCase(txt)
 end
 
+local function anchorPopup(dialog)
+  if not dialog then return end
+  if not GhostFrame or not GhostFrame:IsShown() then return end
+  local _, currentRel = dialog:GetPoint()
+  if currentRel == GhostFrame then return end
+  dialog:ClearAllPoints()
+  dialog:SetPoint("TOP", GhostFrame, "BOTTOM", 0, GHOSTFRAME_GAP)
+end
+
 local function styleSubText(dialog)
   if not dialog or not dialog.SubText or not dialog.Text then return end
   dialog.SubText:SetFontObject("UserScaledFontGameHighlight")
@@ -91,6 +92,11 @@ local function refreshSubText(dialog)
   end
 end
 
+-- Called from the outer text's animation tick so the SubText updates in the
+-- same frame as the outer rendering, eliminating any sampling-window drift
+-- between the two.
+NS.RefreshPopupSubText = refreshSubText
+
 -- ---------------------------------------------------------------------------
 -- Driver: pushes the accurate remaining wave time into dialog.timeleft so the
 -- "Resurrection in N Seconds" line stays correct, and refreshes our SubText.
@@ -102,6 +108,8 @@ driver:SetScript("OnUpdate", function(_, elapsed)
   local dialog = StaticPopup_FindVisible(POPUP)
 
   if dialog then
+    anchorPopup(dialog)
+
     -- Opportunistic capture: if we never got a clean IN_RANGE reading,
     -- anchor from whatever the dialog is showing the first time we see it.
     if not gyEndTime and dialog.timeleft and dialog.timeleft > 0 then
@@ -140,11 +148,11 @@ hooksecurefunc("StaticPopup_Show", function(which)
     end
   end
   refreshSubText(dialog)
+  anchorPopup(dialog)
 end)
 
 -- ---------------------------------------------------------------------------
--- Events: just track wave anchoring + cleanup. UIParent's OOR-hide is gone,
--- so we don't need to fight it.
+-- Events: track wave anchoring + cleanup.
 -- ---------------------------------------------------------------------------
 
 local helper = CreateFrame("Frame")
