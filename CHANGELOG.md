@@ -1,5 +1,13 @@
 # Auto Body Res
 
+## [v1.3.5](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.5) (2026-05-21)
+
+- Adding new "Auto Leave" match setting
+- Adding new "Auto Role Check" setting
+- Adding new "Auto Ready Check" setting
+- Adding new delay option to auto resurrect
+- Adding new delay option to auto release
+
 ## [v1.3.4](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.4) (2026-05-04)
 
 - Ensuring default pvp gy window goes away when leaving the gy res area

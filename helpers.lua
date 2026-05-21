@@ -189,26 +189,3 @@ NS.CleanupDB = function(src, dst)
   end
   return dst
 end
-
--- Pool for reusing tables. (Garbage collector isn't ran in combat unless max garbage is reached, which causes fps drops)
-do
-  local pool = {}
-
-  NS.NewTable = function()
-    local t = next(pool) or {}
-    pool[t] = nil -- remove from pool
-    return t
-  end
-
-  NS.RemoveTable = function(tbl)
-    if tbl then
-      pool[wipe(tbl)] = true -- add to pool, wipe returns pointer to tbl here
-    end
-  end
-
-  NS.ReleaseTables = function()
-    if next(pool) then
-      pool = {}
-    end
-  end
-end

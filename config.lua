@@ -14,12 +14,25 @@ local CreateFrame = CreateFrame
 ---@field b number
 ---@field a number
 
+---@class RoleTable : table
+---@field enabled boolean
+---@field all boolean
+---@field tank boolean
+---@field healer boolean
+---@field dps boolean
+
 ---@class GlobalTable : table
----@field lock boolean
----@field test boolean
 ---@field release boolean
+---@field resurrect boolean
 ---@field text boolean
 ---@field outside boolean
+---@field leave boolean
+---@field leaveDelay number
+---@field role RoleTable
+---@field readyCheck boolean
+---@field resurrectDelay number
+---@field releaseDelay number
+---@field introShown boolean
 ---@field fontsize number
 ---@field font string
 ---@field color ColorArray
@@ -57,7 +70,7 @@ AutoBodyResFrame:SetScript("OnEvent", function(_, event, ...)
 end)
 NS.AutoBodyRes.frame = AutoBodyResFrame
 
-NS.PLACEHOLDER_TEXT = "PLACEHOLDER TEXT"
+NS.PLACEHOLDER_TEXT = "BODY RES AVAILABLE"
 
 NS.BRAWL_IDS = {
   [17] = "Cooking Impossible",
@@ -81,12 +94,23 @@ NS.INSTANCE_TYPES = {
 
 NS.DefaultDatabase = {
   global = {
-    lock = false,
-    test = true,
     release = true,
     resurrect = true,
     text = true,
     outside = false,
+    leave = false,
+    leaveDelay = 5,
+    role = {
+      enabled = false,
+      all = true,
+      tank = true,
+      healer = true,
+      dps = true,
+    },
+    readyCheck = false,
+    resurrectDelay = 0,
+    releaseDelay = 0,
+    introShown = false,
     disableblitz = false,
     disablerated = false,
     disablerandom = false,

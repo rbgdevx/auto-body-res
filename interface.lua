@@ -33,12 +33,12 @@ function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
-    if NS.db.global.lock == false and CanInteractWithFrame(frame) then
+    if NS.testMode and CanInteractWithFrame(frame) then
       f:StartMoving()
     end
   end)
   frame:SetScript("OnDragStop", function(f)
-    if NS.db.global.lock == false and CanInteractWithFrame(frame) then
+    if NS.testMode and CanInteractWithFrame(frame) then
       f:StopMovingOrSizing()
       local a, _, b, c, d = f:GetPoint()
       NS.db.global.position[1] = a
@@ -57,7 +57,7 @@ end
 function Interface:AddControls(frame)
   frame:EnableMouse(true)
   frame:SetScript("OnMouseUp", function(_, btn)
-    if NS.db.global.lock == false and not IsInInstance() and frame:IsVisible() and frame:GetAlpha() ~= 0 then
+    if NS.testMode and not IsInInstance() and frame:IsVisible() and frame:GetAlpha() ~= 0 then
       if btn == "RightButton" then
         AceConfigDialog:Open(AddonName)
       end
@@ -162,14 +162,32 @@ function Interface:CreateInterface()
     Interface.text = Text
     Interface.textFrame = TextFrame
 
-    if NS.db.global.lock then
-      self:Lock(Interface.textFrame)
-    else
-      self:Unlock(Interface.textFrame)
-    end
+    self:Lock(Interface.textFrame)
 
     Interface.timerAnimationGroup = self:CreateTimerAnimation(Interface.textFrame)
     Interface.flashAnimationGroup = self:CreateFlashAnimation(Interface.textFrame)
+  end
+end
+
+function NS.EnableTestMode()
+  NS.testMode = true
+  if Interface.textFrame then
+    Interface.text:SetText(NS.PLACEHOLDER_TEXT)
+    NS.UpdateSize(Interface.textFrame, Interface.text)
+    Interface.textFrame:Show()
+    Interface.textFrame:SetAlpha(1)
+    Interface:Unlock(Interface.textFrame)
+  end
+end
+
+function NS.DisableTestMode()
+  NS.testMode = false
+  if Interface.textFrame then
+    Interface:Lock(Interface.textFrame)
+    if not NS.isDead() then
+      Interface.textFrame:Hide()
+      Interface.text:SetText("")
+    end
   end
 end
 

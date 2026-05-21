@@ -1,6 +1,6 @@
 ## Interface: 120007, 120005
 ## Title: Auto Body Res
-## Version: 1.3.4
+## Version: 1.3.5
 ## Author: RBGDEV
 ## Notes: Shows text if someone took your body or not after you died in a battleground, preventing you from being able to body res.
 ## IconTexture: Interface/AddOns/AutoBodyRes/logo.tga
@@ -22,4 +22,5 @@ helpers.lua
 interface.lua
 options.lua
 popup.lua
+intro-popup.lua
 AutoBodyRes.lua
