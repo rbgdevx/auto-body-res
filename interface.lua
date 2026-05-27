@@ -149,14 +149,13 @@ function Interface:CreateInterface()
     )
 
     local Text = TextFrame:CreateFontString(nil, "OVERLAY")
-    Text:SetShadowOffset(0, 0)
-    Text:SetShadowColor(0, 0, 0, 1)
     Text:SetJustifyH("CENTER")
     Text:SetJustifyV("MIDDLE")
     Text:SetPoint("CENTER", TextFrame, "CENTER", 0, 0)
 
     NS.UpdateColor(Text)
     NS.UpdateFont(Text)
+    NS.UpdateShadow(Text)
     NS.UpdateSize(TextFrame, Text)
 
     Interface.text = Text

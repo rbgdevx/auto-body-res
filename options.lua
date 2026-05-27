@@ -35,129 +35,6 @@ NS.AceConfig = {
         },
       },
     },
-    autoResurrect = {
-      name = "Auto Resurrect",
-      type = "group",
-      inline = true,
-      order = 5,
-      args = {
-        enable = {
-          name = "Enable Auto Resurrect",
-          desc = "Auto-accept resurrection from a friend, spell, or by being in range of your body.",
-          type = "toggle",
-          width = "double",
-          order = 1,
-          set = function(_, val)
-            NS.db.global.resurrect = val
-          end,
-          get = function(_)
-            return NS.db.global.resurrect
-          end,
-        },
-        enableText = {
-          name = "Enable Body Res text",
-          desc = '(i.e. "Body Res in 01:14", "Body Res Available", "Body Taken")',
-          type = "toggle",
-          width = "double",
-          order = 2,
-          set = function(_, val)
-            NS.db.global.text = val
-            NS.OnDbChanged()
-          end,
-          get = function(_)
-            return NS.db.global.text
-          end,
-        },
-        test = {
-          name = function()
-            return "Test " .. ((NS.testMode and "(On)") or "(Off)")
-          end,
-          desc = "Show placeholder text and unlock the frame for repositioning. Click again to lock it back in place.",
-          type = "execute",
-          width = "double",
-          order = 3,
-          func = function()
-            if NS.testMode then
-              NS.DisableTestMode()
-            else
-              NS.EnableTestMode()
-            end
-            AceConfigRegistry:NotifyChange(AddonName)
-          end,
-        },
-        spacer1 = { name = " ", type = "description", order = 4, width = "full" },
-        delay = {
-          name = "Resurrect delay (seconds)",
-          desc = "How long to wait before auto-accepting a resurrect or retrieving your body. Lets you manually decline or wait.",
-          type = "range",
-          width = 1.5,
-          order = 5,
-          min = 0,
-          max = 10,
-          step = 1,
-          disabled = function()
-            return not NS.db.global.resurrect
-          end,
-          set = function(_, val)
-            NS.db.global.resurrectDelay = val
-          end,
-          get = function(_)
-            return NS.db.global.resurrectDelay
-          end,
-        },
-        spacer2 = { name = " ", type = "description", order = 6, width = "full" },
-        fontsize = {
-          type = "range",
-          name = "Font Size",
-          width = "double",
-          order = 7,
-          min = 2,
-          max = 64,
-          step = 1,
-          set = function(_, val)
-            NS.db.global.fontsize = val
-            NS.OnDbChanged()
-          end,
-          get = function(_)
-            return NS.db.global.fontsize
-          end,
-        },
-        spacer3 = { name = " ", type = "description", order = 8, width = "full" },
-        font = {
-          type = "select",
-          name = "Font",
-          width = "double",
-          order = 9,
-          dialogControl = "LSM30_Font",
-          values = SharedMedia:HashTable("font"),
-          set = function(_, val)
-            NS.db.global.font = val
-            NS.OnDbChanged()
-          end,
-          get = function(_)
-            return NS.db.global.font
-          end,
-        },
-        spacer4 = { name = "", type = "description", order = 10, width = 0.1 },
-        color = {
-          type = "color",
-          name = "Color",
-          width = 0.5,
-          order = 11,
-          hasAlpha = true,
-          set = function(_, val1, val2, val3, val4)
-            NS.db.global.color.r = val1
-            NS.db.global.color.g = val2
-            NS.db.global.color.b = val3
-            NS.db.global.color.a = val4
-            NS.OnDbChanged()
-          end,
-          get = function(_)
-            return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
-          end,
-        },
-      },
-    },
     autoRelease = {
       name = "Auto Release",
       type = "group",
@@ -325,6 +202,216 @@ NS.AceConfig = {
           end,
           get = function(_)
             return NS.db.global.role.dps
+          end,
+        },
+      },
+    },
+    autoResurrect = {
+      name = "Auto Resurrect",
+      type = "group",
+      inline = true,
+      order = 5,
+      args = {
+        enable = {
+          name = "Enable Auto Resurrect",
+          desc = "Auto-accept resurrection from a friend, spell, or by being in range of your body.",
+          type = "toggle",
+          width = 1.5,
+          order = 1,
+          set = function(_, val)
+            NS.db.global.resurrect = val
+          end,
+          get = function(_)
+            return NS.db.global.resurrect
+          end,
+        },
+        test = {
+          name = function()
+            return "Test " .. ((NS.testMode and "(On)") or "(Off)")
+          end,
+          desc = "Show placeholder text and unlock the frame for repositioning. Click again to lock it back in place.",
+          type = "execute",
+          width = 1.5,
+          order = 2,
+          func = function()
+            if NS.testMode then
+              NS.DisableTestMode()
+            else
+              NS.EnableTestMode()
+            end
+            AceConfigRegistry:NotifyChange(AddonName)
+          end,
+        },
+        spacer1 = { name = " ", type = "description", order = 3, width = "full" },
+        enableText = {
+          name = "Enable Body Res text",
+          desc = '(i.e. "Body Res in 01:14", "Body Res Available", "Body Taken")',
+          type = "toggle",
+          width = 1.5,
+          order = 4,
+          set = function(_, val)
+            NS.db.global.text = val
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.text
+          end,
+        },
+        enablePopupText = {
+          name = "Enable GY Popup Body Res text",
+          desc = "Show body res status text inside the graveyard spirit healer popup.",
+          type = "toggle",
+          width = 1.5,
+          order = 4.5,
+          set = function(_, val)
+            NS.db.global.popuptext = val
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.popuptext
+          end,
+        },
+        spacer1b = { name = " ", type = "description", order = 4.6, width = "full" },
+        spacer2 = { name = " ", type = "description", order = 5, width = "full" },
+        delay = {
+          name = "Resurrect delay (seconds)",
+          desc = "How long to wait before auto-accepting a resurrect or retrieving your body. Lets you manually decline or wait.",
+          type = "range",
+          width = 1.5,
+          order = 6,
+          min = 0,
+          max = 10,
+          step = 1,
+          disabled = function()
+            return not NS.db.global.resurrect
+          end,
+          set = function(_, val)
+            NS.db.global.resurrectDelay = val
+          end,
+          get = function(_)
+            return NS.db.global.resurrectDelay
+          end,
+        },
+        fontsize = {
+          type = "range",
+          name = "Font Size",
+          width = 1.5,
+          order = 8,
+          min = 2,
+          max = 64,
+          step = 1,
+          set = function(_, val)
+            NS.db.global.fontsize = val
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.fontsize
+          end,
+        },
+        spacer4 = { name = " ", type = "description", order = 9, width = "full" },
+        font = {
+          type = "select",
+          name = "Font",
+          width = 2.0,
+          order = 10,
+          dialogControl = "LSM30_Font",
+          values = SharedMedia:HashTable("font"),
+          set = function(_, val)
+            NS.db.global.font = val
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.font
+          end,
+        },
+        spacer5 = { name = " ", type = "description", order = 11, width = 0.1 },
+        color = {
+          type = "color",
+          name = "Color",
+          width = 1.0,
+          order = 12,
+          hasAlpha = true,
+          set = function(_, val1, val2, val3, val4)
+            NS.db.global.color.r = val1
+            NS.db.global.color.g = val2
+            NS.db.global.color.b = val3
+            NS.db.global.color.a = val4
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
+          end,
+        },
+        spacer6 = { name = " ", type = "description", order = 13, width = "full" },
+        outline = {
+          type = "select",
+          name = "Outline",
+          width = 2.0,
+          order = 14,
+          values = {
+            ["OUTLINE"] = "Outline",
+            ["THICKOUTLINE"] = "Thick Outline",
+            ["MONOCHROME, OUTLINE"] = "Monochrome Outline",
+            ["MONOCHROME, THICKOUTLINE"] = "Monochrome Thick Outline",
+            [""] = "None",
+          },
+          set = function(_, val)
+            NS.db.global.outline = val
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.outline
+          end,
+        },
+        spacer7 = { name = " ", type = "description", order = 15, width = 0.1 },
+        shadowColor = {
+          type = "color",
+          name = "Shadow Color",
+          width = 1.0,
+          order = 16,
+          hasAlpha = true,
+          set = function(_, val1, val2, val3, val4)
+            NS.db.global.shadowColor.r = val1
+            NS.db.global.shadowColor.g = val2
+            NS.db.global.shadowColor.b = val3
+            NS.db.global.shadowColor.a = val4
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.shadowColor.r, NS.db.global.shadowColor.g, NS.db.global.shadowColor.b, NS.db.global.shadowColor.a
+          end,
+        },
+        spacer8 = { name = " ", type = "description", order = 17, width = "full" },
+        shadowOffsetX = {
+          type = "range",
+          name = "Shadow Offset X",
+          width = 1.5,
+          order = 18,
+          min = -10,
+          max = 10,
+          step = 1,
+          set = function(_, val)
+            NS.db.global.shadowOffsetX = val
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.shadowOffsetX
+          end,
+        },
+        shadowOffsetY = {
+          type = "range",
+          name = "Shadow Offset Y",
+          width = 1.5,
+          order = 19,
+          min = -10,
+          max = 10,
+          step = 1,
+          set = function(_, val)
+            NS.db.global.shadowOffsetY = val
+            NS.OnDbChanged()
+          end,
+          get = function(_)
+            return NS.db.global.shadowOffsetY
           end,
         },
       },

@@ -449,6 +449,7 @@ function NS.OnDbChanged()
 
   NS.UpdateColor(NS.Interface.text)
   NS.UpdateFont(NS.Interface.text)
+  NS.UpdateShadow(NS.Interface.text)
   NS.UpdateSize(NS.Interface.textFrame, NS.Interface.text)
 
   if NS.db.global.text then

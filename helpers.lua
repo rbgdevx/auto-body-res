@@ -4,7 +4,6 @@ local LibStub = LibStub
 local type = type
 local next = next
 local pairs = pairs
-local wipe = wipe
 local getmetatable = getmetatable
 local setmetatable = setmetatable
 local RetrieveCorpse = RetrieveCorpse -- Resurrects when the player is standing near its corpse.
@@ -36,11 +35,17 @@ NS.UpdateSize = function(frame, text)
 end
 
 NS.UpdateFont = function(frame)
-  frame:SetFont(SharedMedia:Fetch("font", NS.db.global.font), NS.db.global.fontsize, "OUTLINE")
+  frame:SetFont(SharedMedia:Fetch("font", NS.db.global.font), NS.db.global.fontsize, NS.db.global.outline)
 end
 
 NS.UpdateColor = function(frame)
   frame:SetTextColor(NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a)
+end
+
+NS.UpdateShadow = function(frame)
+  frame:SetShadowOffset(NS.db.global.shadowOffsetX, NS.db.global.shadowOffsetY)
+  local sc = NS.db.global.shadowColor
+  frame:SetShadowColor(sc.r, sc.g, sc.b, sc.a)
 end
 
 NS.secondsToMinutes = function(seconds)

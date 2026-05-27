@@ -1,5 +1,13 @@
 # Auto Body Res
 
+## [v1.3.6](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.6) (2026-05-27)
+
+- Adding new settings for outline and shadow
+- Removing dead code from a test idea
+- Updating how im setting text in the gy window
+- Adding option to now show abr text in the gy window
+- Fixing some errors
+
 ## [v1.3.5](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.5) (2026-05-21)
 
 - Adding new "Auto Leave" match setting
