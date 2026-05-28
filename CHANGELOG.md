@@ -1,5 +1,11 @@
 # Auto Body Res
 
+## [v1.3.7](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.7) (2026-05-28)
+
+- Fixing return to gy window going away
+- Re-writing spirit release window text to be better
+- Updating the default font color
+
 ## [v1.3.6](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.6) (2026-05-27)
 
 - Adding new settings for outline and shadow

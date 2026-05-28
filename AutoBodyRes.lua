@@ -458,6 +458,12 @@ function NS.OnDbChanged()
     NS.Interface.textFrame:SetAlpha(0)
   end
 
+  -- Reflect setting changes (e.g. toggling popup text) into a visible
+  -- spirit-healer popup immediately instead of waiting for the next sample.
+  if NS.RefreshPopupSubText then
+    NS.RefreshPopupSubText()
+  end
+
   AutoBodyResFrame.dbChanged = false
 end
 

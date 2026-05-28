@@ -130,9 +130,9 @@ NS.DefaultDatabase = {
     },
     debug = false,
     color = {
-      r = 176 / 255,
-      g = 43 / 255,
-      b = 43 / 255,
+      r = 1,
+      g = 1,
+      b = 1,
       a = 1,
     },
     position = {

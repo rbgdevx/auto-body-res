@@ -378,7 +378,10 @@ NS.AceConfig = {
             NS.OnDbChanged()
           end,
           get = function(_)
-            return NS.db.global.shadowColor.r, NS.db.global.shadowColor.g, NS.db.global.shadowColor.b, NS.db.global.shadowColor.a
+            return NS.db.global.shadowColor.r,
+              NS.db.global.shadowColor.g,
+              NS.db.global.shadowColor.b,
+              NS.db.global.shadowColor.a
           end,
         },
         spacer8 = { name = " ", type = "description", order = 17, width = "full" },
