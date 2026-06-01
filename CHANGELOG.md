@@ -1,5 +1,9 @@
 # Auto Body Res
 
+## [v1.3.8](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.8) (2026-06-01)
+
+- Removing the GY popup body res text injection to prevent taint
+
 ## [v1.3.7](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.7) (2026-05-28)
 
 - Fixing return to gy window going away

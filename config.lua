@@ -97,7 +97,6 @@ NS.DefaultDatabase = {
     release = true,
     resurrect = true,
     text = true,
-    popuptext = true,
     outside = false,
     leave = false,
     leaveDelay = 5,

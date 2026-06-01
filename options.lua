@@ -257,21 +257,6 @@ NS.AceConfig = {
             return NS.db.global.text
           end,
         },
-        enablePopupText = {
-          name = "Enable GY Popup Body Res text",
-          desc = "Show body res status text inside the graveyard spirit healer popup.",
-          type = "toggle",
-          width = 1.5,
-          order = 4.5,
-          set = function(_, val)
-            NS.db.global.popuptext = val
-            NS.OnDbChanged()
-          end,
-          get = function(_)
-            return NS.db.global.popuptext
-          end,
-        },
-        spacer1b = { name = " ", type = "description", order = 4.6, width = "full" },
         spacer2 = { name = " ", type = "description", order = 5, width = "full" },
         delay = {
           name = "Resurrect delay (seconds)",
