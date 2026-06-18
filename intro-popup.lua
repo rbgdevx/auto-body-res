@@ -1,7 +1,6 @@
 local AddonName, NS = ...
 
 local CreateFrame = CreateFrame
-local tinsert = tinsert
 local LibStub = LibStub
 
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
@@ -68,11 +67,12 @@ local function CreateIntroFrame()
   local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
   closeBtn:SetPoint("TOPRIGHT", -5, -5)
 
-  -- Mark "seen" on any hide path (X button, Esc via UISpecialFrames, programmatic)
+  -- Mark "seen" on any hide path (X button, Esc via OnKeyDown, programmatic)
   frame:HookScript("OnHide", MarkShown)
 
-  -- Esc to close
-  tinsert(UISpecialFrames, "AutoBodyResIntroFrame")
+  -- Esc to close — handled locally (helpers.lua) instead of UISpecialFrames so
+  -- secure code never reads a tainted frame global
+  NS.MakeEscClosable(frame)
 
   -- Checkboxes
   AddCheckbox(frame, "Enable Auto Role Check", -75, function()

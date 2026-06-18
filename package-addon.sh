@@ -11,7 +11,7 @@
 # Excludes (dev-only, not part of the addon distribution):
 #   .git/, .gitignore, .DS_Store, ._* (AppleDouble), .claude/, .vscode/,
 #   .luarc.json, .libraries/, AGENTS.md, CLAUDE.md, README.md,
-#   CHANGELOG.md, LICENSE, cspell.json, stylua.toml, deploy-to-wow.sh,
+#   CHANGELOG.md, cspell.json, stylua.toml, deploy-to-wow.sh,
 #   package-addon.sh
 #
 # Kept:
@@ -54,7 +54,6 @@ rsync -a \
   --exclude='CLAUDE.md' \
   --exclude='README.md' \
   --exclude='CHANGELOG.md' \
-  --exclude='LICENSE' \
   --exclude='cspell.json' \
   --exclude='stylua.toml' \
   --exclude='deploy-to-wow.sh' \

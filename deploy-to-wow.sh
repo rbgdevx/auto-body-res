@@ -22,7 +22,6 @@
 #   CLAUDE.md         — agent instructions
 #   README.md         — repo readme (not addon metadata)
 #   CHANGELOG.md      — repo changelog (not part of addon distribution)
-#   LICENSE           — repo legal file (GitHub only, not shipped with addon)
 #   cspell.json       — spell-check config
 #   stylua.toml       — lua formatter config
 #   deploy-to-wow.sh  — this script itself
@@ -90,7 +89,6 @@ rsync -a \
   --exclude='CLAUDE.md' \
   --exclude='README.md' \
   --exclude='CHANGELOG.md' \
-  --exclude='LICENSE' \
   --exclude='cspell.json' \
   --exclude='stylua.toml' \
   --exclude='deploy-to-wow.sh' \

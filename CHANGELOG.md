@@ -1,5 +1,11 @@
 # Auto Body Res
 
+## [v1.3.9](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.9) (2026-06-17)
+
+- Lua cleanup
+- Fixing taint
+- Adding license
+
 ## [v1.3.8](https://github.com/rbgdevx/auto-body-res/releases/tag/v1.3.8) (2026-06-01)
 
 - Removing the GY popup body res text injection to prevent taint

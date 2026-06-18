@@ -194,3 +194,58 @@ NS.CleanupDB = function(src, dst)
   end
   return dst
 end
+
+-- Replacement for UISpecialFrames. Inserting addon frames into UISpecialFrames
+-- makes Blizzard's secure CloseWindows()/CloseSpecialWindows() path read our
+-- tainted frame global on every Escape press (logged at taintLog 2+), so ESC is
+-- handled locally instead. SetPropagateKeyboardInput is restricted for insecure
+-- code while in combat (since 10.1.5), so keyboard input is only enabled while
+-- the frame is shown AND out of combat, and the frame auto-hides when combat
+-- starts. Edge case: a frame opened DURING combat keeps keyboard disabled, so
+-- ESC opens the game menu until combat ends.
+local escWatcher = CreateFrame("Frame")
+escWatcher.frames = {}
+escWatcher:RegisterEvent("PLAYER_REGEN_DISABLED")
+escWatcher:RegisterEvent("PLAYER_REGEN_ENABLED")
+escWatcher:SetScript("OnEvent", function(self, event)
+  for frame in pairs(self.frames) do
+    if event == "PLAYER_REGEN_DISABLED" then
+      frame:EnableKeyboard(false) -- never handle keys in combat
+      if frame:IsShown() then
+        frame:Hide()
+      end
+    elseif frame:IsShown() then
+      frame:EnableKeyboard(true) -- opened mid-combat, combat just ended
+    end
+  end
+end)
+
+NS.MakeEscClosable = function(frame)
+  escWatcher.frames[frame] = true
+  frame:EnableKeyboard(false) -- only enabled while shown + out of combat
+  frame:SetScript("OnKeyDown", function(self, key)
+    if InCombatLockdown() then
+      return -- restricted API; guards the one-frame race before REGEN_DISABLED
+    end
+    if key == "ESCAPE" then
+      self:SetPropagateKeyboardInput(false) -- consume: don't also open game menu
+      self:Hide()
+    else
+      self:SetPropagateKeyboardInput(true) -- movement/typing passes through
+    end
+  end)
+  frame:HookScript("OnShow", function(self)
+    if InCombatLockdown() then
+      -- Don't allow these windows on screen during combat. Hidden in the same
+      -- frame as Show() so there's no visible flash, and keyboard never gets
+      -- enabled in combat. Opens normally once combat ends.
+      self:Hide()
+      print("|cff33ff99Auto Body Res|r: can't open this window during combat.")
+      return
+    end
+    self:EnableKeyboard(true)
+  end)
+  frame:HookScript("OnHide", function(self)
+    self:EnableKeyboard(false)
+  end)
+end

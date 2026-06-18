@@ -365,7 +365,7 @@ function NS.OnDbChanged()
     local isBattleground = instanceType == "pvp" or IsBattleground()
 
     if isBattleground then
-      local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
+      -- local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
 
       -- local isBlitz = IsRatedSoloRBG()
       -- local isRated = IsRatedBattleground()
